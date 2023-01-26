@@ -25,6 +25,10 @@ source-repository head
 
 library
   exposed-modules:
+      EbnfGrammar.Parser
+      EbnfGrammar.Prettyprinter
+      EbnfGrammar.Scanner
+      EbnfGrammar.Syntax
       Lib
   other-modules:
       Paths_ebnf_grammar_parser
@@ -32,7 +36,12 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
+    , ebnf-extensions
+    , prettyprinter
+    , std-token
+    , uniplate
   default-language: Haskell2010
 
 executable ebnf-grammar-parser-exe
@@ -43,8 +52,13 @@ executable ebnf-grammar-parser-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
+    , ebnf-extensions
     , ebnf-grammar-parser
+    , prettyprinter
+    , std-token
+    , uniplate
   default-language: Haskell2010
 
 test-suite ebnf-grammar-parser-test
@@ -56,6 +70,11 @@ test-suite ebnf-grammar-parser-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
+    , ebnf-extensions
     , ebnf-grammar-parser
+    , prettyprinter
+    , std-token
+    , uniplate
   default-language: Haskell2010

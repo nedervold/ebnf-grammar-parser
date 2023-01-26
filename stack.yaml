@@ -40,7 +40,11 @@ packages:
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
-# extra-deps: []
+extra-deps:
+- git: https://github.com/nedervold/std-token.git
+  commit: 51fa65df63fc8aa4d753b86c11e82db9c5718ac1
+- git: https://github.com/nedervold/ebnf-extensions.git
+  commit: 40c9af17403e0c5a55d707eac44738581a896303
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
