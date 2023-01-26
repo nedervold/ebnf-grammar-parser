@@ -2,6 +2,10 @@
 build :
 	stack build
 
+.PHONY : run
+run : build
+	stack exec -- ebnf-grammar-parser-exe
+
 .PHONY : docs
 docs :
 	stack haddock && open `stack path --local-doc-root`/index.html

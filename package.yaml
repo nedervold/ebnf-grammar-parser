@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/nede
 
 dependencies:
 - base >= 4.7 && < 5
+- algebraic-graphs
 - array
 - containers
 - ebnf-extensions
@@ -28,6 +29,7 @@ dependencies:
 - prettyprinter
 - std-token
 - uniplate
+- validation
 
 ghc-options:
 - -Wall

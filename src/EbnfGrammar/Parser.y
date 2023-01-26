@@ -8,8 +8,9 @@ module EbnfGrammar.Parser
 import Control.Monad.Except(throwError)
 import qualified Data.List.NonEmpty as NE
 import EbnfGrammar.Error(Error(..))
-import EbnfGrammar.Scanner(Token, TokenType(..), scan)
+import EbnfGrammar.Scanner(scan)
 import EbnfGrammar.Syntax
+import EbnfGrammar.Token(Token, TokenType(..))
 import Text.StdToken(StdToken(..))
 }
 

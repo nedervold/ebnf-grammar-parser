@@ -7,12 +7,14 @@ module EbnfGrammar.Syntax
   , Alt(..)
   , Term(..)
   , Vocab(..)
+  , PA(..)
   ) where
 
 import Data.Data (Data)
 import Data.Function (on)
 import Data.Generics.Uniplate.Data ()
-import EbnfGrammar.Scanner (Token)
+import Data.Ord (comparing)
+import EbnfGrammar.Token (Token)
 import Language.Ebnf.Extensions.Syntax (Rep1)
 import Text.StdToken (_tokenText)
 
@@ -29,6 +31,24 @@ data Alt =
   Alt (Maybe Token) [Term]
   deriving (Data, Eq, Show)
 
+------------------------------
+data PA
+  = P Prod
+  | A Alt
+  deriving (Eq, Show)
+
+instance Ord PA
+  -- assume no duplicate heads, no duplicate constructors
+                                                          where
+  compare (P (Prod hd _)) (P (Prod hd' _)) = comparing _tokenText hd hd'
+  compare (A (Alt (Just ctor) _)) (A (Alt (Just ctor') _)) =
+    comparing _tokenText ctor ctor'
+  compare (P _) (A (Alt _ _)) = LT
+  compare (A (Alt _ _)) (P _) = GT
+  compare (A (Alt Nothing _)) _ = error "impossible"
+  compare _ (A (Alt Nothing _)) = error "impossible"
+
+------------------------------
 data Term
   = VocabTerm Vocab
   | Opt Vocab

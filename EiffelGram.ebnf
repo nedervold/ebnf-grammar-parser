@@ -1,0 +1,523 @@
+class_declaration ::= : [ notes ] class_header [ formal_generics ] [ obsolete ] [ inheritance ] [ creators ] [ converters ] [ features ] [ invariant ] [ notes ] TOKEN_END.
+
+class_name ::= : TOKEN_IDENTIFIER.
+
+notes ::= : TOKEN_NOTE note_list.
+
+note_list ::= : { note_entry_or_semicolon }.
+
+note_entry_or_semicolon ::= note_list_note_entry : note_entry
+    | note_list_semicolon : TOKEN_SEMICOLON .
+
+note_entry ::= : note_name note_values.
+
+note_name ::= : TOKEN_IDENTIFIER TOKEN_COLON.
+
+note_values ::= : { note_item ... TOKEN_COMMA }+.
+
+note_item ::= identifier_note_item : TOKEN_IDENTIFIER
+              | constant_note_item: manifest_constant.
+
+class_header ::= : [ header_mark ] TOKEN_CLASS class_name.
+
+header_mark ::= deferred_header_mark : TOKEN_DEFERRED
+                | expanded_header_mark : TOKEN_EXPANDED
+                | frozen_header_mark : TOKEN_FROZEN.
+
+obsolete ::= : TOKEN_OBSOLETE message.
+
+message ::= : TOKEN_MANIFEST_STRING.
+
+features ::= : { feature_clause }+.
+
+feature_clause ::= : TOKEN_FEATURE [ clients ] [ header_comment ] feature_declaration_list.
+
+feature_declaration_list ::= : { feature_declaration_or_semicolon }.
+
+feature_declaration_or_semicolon
+    ::= feature_declaration_list_feature_declaration : feature_declaration
+    | feature_declaration_list_semicolon : TOKEN_SEMICOLON .
+
+header_comment ::= : TOKEN_COMMENT.
+
+feature_declaration ::= : new_feature_list declaration_body.
+
+declaration_body ::= :  formal_arguments query_mark feature_value .
+
+query_mark ::= : type_mark [ assigner_mark ].
+
+type_mark ::= : TOKEN_COLON type_x.
+
+assigner_mark ::= : TOKEN_ASSIGN feature_name.
+
+feature_value ::= :  explicit_value obsolete header_comment attribute_or_routine .
+
+new_feature_list ::= : { new_feature ... TOKEN_COMMA }+.
+
+new_feature ::= : [ TOKEN_FROZEN ] extended_feature_name.
+
+attribute_or_routine ::= : [ precondition ] [ local_declarations ] feature_body [ postcondition ] [ rescue ] TOKEN_END.
+
+explicit_value ::= : TOKEN_EQUAL manifest_constant.
+
+feature_body ::= deferred_feature_body : deferred
+                 | effective_feature_body : effective_routine
+                 | attribute_feature_body : attribute.
+
+extended_feature_name ::= : feature_name [ alias ].
+
+feature_name ::= : TOKEN_IDENTIFIER.
+
+alias ::= : TOKEN_ALIAS TOKEN_MANIFEST_STRING [ TOKEN_CONVERT ].
+
+unary ::= unary_not : TOKEN_NOT
+          | unary_plus : TOKEN_PLUS
+          | unary_minus : TOKEN_MINUS
+          | unary_free : free_unary.
+
+binary ::= binary_plus : TOKEN_PLUS
+           | binary_minus : TOKEN_MINUS
+           | binary_star : TOKEN_STAR
+           | binary_slash : TOKEN_SLASH
+           | binary_slash_slash : TOKEN_SLASH_SLASH
+           | binary_backslash_backslash : TOKEN_BACKSLASH_BACKSLASH
+           | binary_caret : TOKEN_CARET
+           | binary_dot_dot : TOKEN_DOT_DOT
+           | binary_lt : TOKEN_LESS_THAN
+           | binary_gt : TOKEN_GREATER_THAN
+           | binary_le : TOKEN_LESS_EQUAL
+           | binary_ge : TOKEN_GREATER_EQUAL
+           | binary_and : TOKEN_AND
+           | binary_or : TOKEN_OR
+           | binary_xor : TOKEN_XOR
+           | binary_and_then : TOKEN_AND TOKEN_THEN
+           | binary_or_else : TOKEN_OR TOKEN_ELSE
+           | binary_implies : TOKEN_IMPLIES
+           | binary_free: free_binary.
+
+free_unary ::= : TOKEN_FREE_OPERATOR.
+
+free_binary ::= : TOKEN_FREE_OPERATOR.
+
+inheritance ::= : { inherit_clause }+.
+
+inherit_clause ::= : TOKEN_INHERIT [ non_conformance ] parent_list.
+
+non_conformance ::= : TOKEN_LEFT_BRACE TOKEN_IDENTIFIER TOKEN_RIGHT_BRACE.
+
+parent_list ::= : { parent_or_semicolon }+.
+
+parent_or_semicolon ::= parent_list_parent : parent
+    | parent_list_semicolon : TOKEN_SEMICOLON .
+
+parent ::= : class_type [ feature_adaptation ].
+
+feature_adaptation ::= :  undefine redefine rename new_exports select  TOKEN_END.
+
+rename ::= : TOKEN_RENAME rename_list.
+
+rename_list ::= : { rename_pair ... TOKEN_COMMA }.
+
+rename_pair ::= : feature_name TOKEN_AS extended_feature_name.
+
+clients ::= : TOKEN_LEFT_BRACE class_list TOKEN_RIGHT_BRACE.
+
+class_list ::= : { class_name ... TOKEN_COMMA }+.
+
+new_exports ::= : TOKEN_EXPORT new_export_list.
+
+new_export_list ::= : { new_export_item_or_semicolon }+.
+
+new_export_item_or_semicolon
+    ::= new_export_list_new_export_item : new_export_item
+    | new_export_list_semicolon : TOKEN_SEMICOLON .
+
+new_export_item ::= : clients [ header_comment ] feature_set.
+
+feature_set ::= feature_list_set : feature_list
+                | all_features : TOKEN_ALL.
+
+feature_list ::= : { feature_name ... TOKEN_COMMA }+.
+
+formal_arguments ::= : TOKEN_LEFT_PAREN entity_declaration_list TOKEN_RIGHT_PAREN.
+
+entity_declaration_list ::= : { entity_declaration_group_or_semicolon }+.
+
+entity_declaration_group_or_semicolon
+    ::= entity_declaration_list_entity_declaration_group
+        : entity_declaration_group
+    | entity_declaration_list_semicolon : TOKEN_SEMICOLON .
+
+entity_declaration_group ::= : identifier_list type_mark.
+
+identifier_list ::= : { TOKEN_IDENTIFIER ... TOKEN_COMMA }+.
+
+deferred ::= : TOKEN_DEFERRED.
+
+effective_routine ::= internal_effective : internal
+                      | external_effective : external.
+
+internal ::= : routine_mark compound.
+
+routine_mark ::= do_routine_mark : TOKEN_DO
+                 | once_routine_mark : once.
+
+once ::= : TOKEN_ONCE [ parenthesized_key_list ].
+
+parenthesized_key_list ::= : TOKEN_LEFT_PAREN key_list TOKEN_RIGHT_PAREN.
+
+key_list ::= : { TOKEN_MANIFEST_STRING ... TOKEN_COMMA }+.
+
+local_declarations ::= : TOKEN_LOCAL [ entity_declaration_list ].
+
+compound ::= : { instruction_or_semicolon }.
+
+instruction_or_semicolon ::= compound_instruction : instruction
+    | compound_semicolon : TOKEN_SEMICOLON .
+
+instruction ::= creation_instruction_instruction : creation_instruction
+                | call_instruction : call
+                | assignment_instruction : assignment
+                | assigner_call_instruction : assigner_call
+                | conditional_instruction : conditional
+                | multi_branch_instruction : multi_branch
+                | loop_instruction : loop
+                | debug_instruction : debug
+                | precursor_instruction : precursor
+                | check_instruction : check
+                | retry_instruction : retry.
+
+precondition ::= : TOKEN_REQUIRE [ TOKEN_ELSE ] assertion.
+
+postcondition ::= : TOKEN_ENSURE [ TOKEN_THEN ] assertion [ only ].
+
+invariant ::= : TOKEN_INVARIANT assertion.
+
+assertion ::= : { assertion_clause_or_semicolon }.
+
+assertion_clause_or_semicolon
+    ::= assertion_assertion_clause : assertion_clause
+    | assertion_semicolon : TOKEN_SEMICOLON .
+
+assertion_clause ::= : [ tag_mark ] unlabeled_assertion_clause.
+
+unlabeled_assertion_clause ::= expression_assertion : boolean_expression
+                               | comment_assertion : TOKEN_COMMENT.
+
+tag_mark ::= : tag TOKEN_COLON.
+
+tag ::= : TOKEN_IDENTIFIER.
+
+old ::= : TOKEN_OLD expression.
+
+only ::= : TOKEN_ONLY feature_list.
+
+check ::= : TOKEN_CHECK assertion TOKEN_END.
+
+variant ::= : TOKEN_VARIANT [ tag_mark ] expression.
+
+precursor ::= : TOKEN_PRECURSOR [ parent_qualification ] [ actuals ].
+
+parent_qualification ::= : TOKEN_LEFT_BRACE class_name TOKEN_RIGHT_BRACE.
+
+redefine ::= : TOKEN_REDEFINE feature_list.
+
+undefine ::= : TOKEN_UNDEFINE feature_list.
+
+type_x ::= class_or_tuple_type_type: class_or_tuple_type
+         | formal_generic_name_type : formal_generic_name
+         | anchored_type : anchored.
+
+class_or_tuple_type ::= class_class_or_tuple_type : class_type
+                        | tuple_class_or_tuple_type : tuple_type.
+
+class_type ::= : [ attachment_mark ] class_name [ actual_generics ].
+
+attachment_mark ::= question_attachment_mark: TOKEN_QUESTION
+                    | bang_attachment_mark : TOKEN_BANG.
+
+anchored ::= : [ attachment_mark ] TOKEN_LIKE anchor.
+
+anchor ::= feature_name_anchor: feature_name
+           | current_anchor : TOKEN_CURRENT.
+
+actual_generics ::= : TOKEN_LEFT_BRACKET type_list TOKEN_RIGHT_BRACKET.
+
+type_list ::= : { type_x ... TOKEN_COMMA }.
+
+formal_generics ::= : TOKEN_LEFT_BRACKET formal_generic_list TOKEN_RIGHT_BRACKET.
+
+formal_generic_list ::= : { formal_generic ... TOKEN_COMMA }+.
+
+formal_generic ::= : [ TOKEN_FROZEN ] formal_generic_name [ constraint ].
+
+formal_generic_name ::= : [ TOKEN_QUESTION ] TOKEN_IDENTIFIER.
+
+constraint ::= : TOKEN_ARROW constraining_types [ constraint_creators ].
+
+constraining_types ::= single_constraining_type : single_constraint
+                       | multiple_constraining_types : multiple_constraint.
+
+single_constraint ::= : type_x [ renaming ].
+
+renaming ::= : rename TOKEN_END.
+
+multiple_constraint ::= : TOKEN_LEFT_BRACE constraint_list TOKEN_RIGHT_BRACE.
+
+constraint_list ::= : { single_constraint ... TOKEN_COMMA }+.
+
+constraint_creators ::= : TOKEN_CREATE feature_list TOKEN_END.
+
+tuple_type ::= : TOKEN_TUPLE tuple_parameter_list.
+
+tuple_parameter_list ::= : [ TOKEN_FROZEN ] TOKEN_LEFT_BRACKET tuple_parameters TOKEN_RIGHT_BRACKET.
+
+tuple_parameters ::= type_list_tuple_parameters : type_list
+                     | entity_list_tuple_parameters : entity_declaration_list.
+
+manifest_tuple ::= : TOKEN_LEFT_BRACKET expression_list TOKEN_RIGHT_BRACKET.
+
+expression_list ::= : { expression ... TOKEN_COMMA }.
+
+converters ::= : TOKEN_CONVERT converter_list.
+
+converter_list ::= : { converter ... TOKEN_COMMA }+.
+
+converter ::= converter_procedure : conversion_procedure
+              | converter_query : conversion_query.
+
+conversion_procedure ::= : feature_name TOKEN_LEFT_PAREN TOKEN_LEFT_BRACE type_list TOKEN_RIGHT_BRACE TOKEN_RIGHT_PAREN.
+
+conversion_query ::= : feature_name TOKEN_COLON TOKEN_LEFT_BRACE type_list TOKEN_RIGHT_BRACE.
+
+select ::= : TOKEN_SELECT feature_list.
+
+conditional ::= : TOKEN_IF then_part_list [ else_part ] TOKEN_END.
+
+then_part_list ::= : { then_part ... TOKEN_ELSE_IF }+.
+
+then_part ::= : boolean_expression TOKEN_THEN compound.
+
+else_part ::= : TOKEN_ELSE compound.
+
+multi_branch ::= : TOKEN_INSPECT expression [ when_part_list ] [ else_part ] TOKEN_END.
+
+when_part_list ::= : { when_part }+.
+
+when_part ::= : TOKEN_WHEN choices TOKEN_THEN compound.
+
+choices ::= : { choice ... TOKEN_COMMA }+.
+
+choice ::= constant_choice : constant
+           | type_choice: manifest_type
+           | constant_interval_choice: constant_interval
+           | type_interval_choice: type_interval.
+
+constant_interval ::= : constant TOKEN_DOT_DOT constant.
+
+type_interval ::= : manifest_type TOKEN_DOT_DOT manifest_type.
+
+loop ::= : initialization [ invariant ] exit_condition loop_body [ variant ] TOKEN_END.
+
+initialization ::= : TOKEN_FROM compound.
+
+exit_condition ::= : TOKEN_UNTIL boolean_expression.
+
+loop_body ::= : TOKEN_LOOP compound.
+
+debug ::= : TOKEN_DEBUG [ parenthesized_key_list ] compound TOKEN_END.
+
+attribute ::= : TOKEN_ATTRIBUTE compound.
+
+entity ::= variable_entity : variable
+           | read_only_entity : read_only.
+
+variable ::= variable_attribute_variable : variable_attribute
+             | local_variable : local.
+
+variable_attribute ::= : feature_name.
+
+local ::= identifier_local : TOKEN_IDENTIFIER
+          | result_local : TOKEN_RESULT.
+
+read_only ::= formal_read_only : formal
+              | constant_read_only : constant_attribute
+              | current_read_only : TOKEN_CURRENT.
+
+formal ::= : TOKEN_IDENTIFIER.
+
+constant_attribute ::= : feature_name.
+
+creators ::= : { creation_clause }+.
+
+creation_clause ::= : TOKEN_CREATE [ clients ] [ header_comment ] creation_procedure_list.
+
+creation_procedure_list ::= : { creation_procedure ... TOKEN_COMMA }+.
+
+creation_procedure ::= : feature_name.
+
+creation_instruction ::= : TOKEN_CREATE [ explicit_creation_type ] creation_call.
+
+explicit_creation_type ::= : TOKEN_LEFT_BRACE type_x TOKEN_RIGHT_BRACE.
+
+creation_call ::= :  variable [ explicit_creation_call ].
+
+explicit_creation_call ::= : TOKEN_DOT feature_name [actuals].
+
+creation_expression ::= : TOKEN_CREATE explicit_creation_type [ explicit_creation_call ].
+
+equality ::= : expression comparison expression.
+
+comparison ::= eq_comparison : TOKEN_EQUAL
+               | not_eq_comparison : TOKEN_NOT_EQUAL
+               | id_comparison : TOKEN_IDENTICAL
+               | not_id_comparison : TOKEN_NOT_IDENTICAL.
+
+assignment ::= : variable TOKEN_ASSIGN expression.
+
+assigner_call ::= : expression TOKEN_ASSIGN expression.
+
+call ::= object_call_call : object_call
+         | non_object_call_call : non_object_call.
+
+object_call ::= : target_dot  feature_name [actuals].
+
+target_dot ::= : target TOKEN_DOT
+           | implicit_current_dot : .
+
+target ::=  local_target : local
+           | read_only_target : read_only
+           | call_target : call
+           | parenthesized_target_target : parenthesized_target.
+
+parenthesized_target ::= : TOKEN_LEFT_PAREN_BAR expression TOKEN_RIGHT_PAREN_BAR.
+
+non_object_call ::= : TOKEN_LEFT_BRACE type_x TOKEN_RIGHT_BRACE TOKEN_DOT  feature_name [actuals].
+
+actuals ::= : TOKEN_LEFT_PAREN actual_list TOKEN_RIGHT_PAREN.
+
+actual_list ::= : { expression ... TOKEN_COMMA }+.
+
+object_test ::= : TOKEN_LEFT_BRACE TOKEN_IDENTIFIER TOKEN_COLON type_x TOKEN_RIGHT_BRACE expression.
+
+rescue ::= : TOKEN_RESCUE compound.
+
+retry ::= : TOKEN_RETRY.
+
+agent ::= call_agent_agent : call_agent
+          | inline_agent_agent : inline_agent.
+
+call_agent ::= : TOKEN_AGENT call_agent_body.
+
+inline_agent ::= : TOKEN_AGENT [ formal_arguments ] [ type_mark ] [ attribute_or_routine ] [ agent_actuals ].
+
+call_agent_body ::= agent_qualified_body : agent_qualified
+                    | agent_unqualified_body : agent_unqualified.
+
+agent_qualified ::= : agent_target TOKEN_DOT agent_unqualified.
+
+agent_unqualified ::= : feature_name [ agent_actuals ].
+
+agent_target ::= entity_agent_target : entity
+                 | parenthesized_agent_target : parenthesized
+                 | manifest_type_agent_target: manifest_type.
+
+agent_actuals ::= : TOKEN_LEFT_PAREN agent_actual_list TOKEN_RIGHT_PAREN.
+
+agent_actual_list ::= : { agent_actual ... TOKEN_COMMA }.
+
+agent_actual ::= expression_agent_actual : expression
+                 | placeholder_agent_actual : placeholder.
+
+placeholder ::= : TOKEN_QUESTION.
+
+expression ::=  basic_expression_expression : basic_expression
+               | special_expression_expression : special_expression.
+
+basic_expression ::= read_only_expression : read_only
+                     | local_expression : local
+                     | call_expression : call
+                     | precursor_expression : precursor
+                     | equality_expression : equality
+                     | parenthesized_expression : parenthesized
+                     | old_expression : old
+                     | operator_expression_expression : operator_expression
+                     | bracket_expression_expression : bracket_expression
+                     | creation_expression_expression : creation_expression.
+
+special_expression ::= manifest_constant_expression : manifest_constant
+                       | manifest_tuple_expression : manifest_tuple
+                       | agent_expression : agent
+                       | object_test_expression : object_test
+                       | once_string_expression : once_string
+                       | address_expression : address.
+
+parenthesized ::= : TOKEN_LEFT_PAREN expression TOKEN_RIGHT_PAREN.
+
+address ::= : TOKEN_DOLLAR variable.
+
+once_string ::= : TOKEN_ONCE TOKEN_MANIFEST_STRING.
+
+boolean_expression ::= basic_boolean_expression : basic_expression
+                       | constant_boolean_expression : boolean_constant
+                       | object_test_boolean_expression : object_test.
+
+operator_expression ::=  unary_operator_expression: unary_expression
+                        | binary_operator_expression : binary_expression.
+
+unary_expression ::= :  unary expression.
+
+binary_expression ::= : expression  binary expression.
+
+bracket_expression ::= : bracket_target TOKEN_LEFT_BRACKET actual_list TOKEN_RIGHT_BRACKET.
+
+bracket_target ::=  target_bracket_target : target
+                   | once_string_bracket_target: once_string
+                   | manifest_constant_bracket_target: manifest_constant
+                   | manifest_tuple_bracket_target: manifest_tuple.
+
+constant ::= manifest_constant_constant: manifest_constant
+             | constant_attribute_constant : constant_attribute.
+
+manifest_constant ::= : [ manifest_type ] manifest_value.
+
+manifest_type ::= : TOKEN_LEFT_BRACE type_x TOKEN_RIGHT_BRACE.
+
+manifest_value ::=  boolean_constant_manifest_value : boolean_constant
+                   | character_constant_manifest_value : TOKEN_CHARACTER_CONSTANT
+                   | integer_constant_manifest_value : integer_constant
+                   | real_constant_manifest_value : real_constant
+                   | manifest_string_manifest_value : TOKEN_MANIFEST_STRING
+                   | manifest_type_manifest_value : manifest_type.
+
+sign ::= plus_sign : TOKEN_PLUS
+         | minus_sign : TOKEN_MINUS.
+
+integer_constant ::= : [ sign ] TOKEN_INTEGER_LITERAL.
+
+boolean_constant ::= true_boolean_constant: TOKEN_TRUE
+                     | false_boolean_constant: TOKEN_FALSE.
+
+real_constant ::= : [ sign ] TOKEN_REAL_LITERAL.
+
+external ::= : TOKEN_EXTERNAL external_language [ external_name ].
+
+external_language ::= unregistered_external_language: unregistered_language
+                      | registered_external_language: registered_language.
+
+unregistered_language ::= : TOKEN_MANIFEST_STRING.
+
+external_name ::= : TOKEN_ALIAS TOKEN_MANIFEST_STRING.
+
+registered_language ::= c_external_language: c_external
+                        | cpp_external_language: cpp_external
+                        | dll_external_language : dll_external.
+
+c_external ::= : TOKEN_MANIFEST_STRING.
+
+cpp_external ::= : TOKEN_MANIFEST_STRING.
+
+dll_external ::= : TOKEN_MANIFEST_STRING.
+
+
+

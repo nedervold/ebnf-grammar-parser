@@ -8,8 +8,8 @@ module EbnfGrammar.Prettyprinter
 
 import Data.List (intersperse)
 import qualified Data.List.NonEmpty as NE
-import EbnfGrammar.Scanner (Token)
 import EbnfGrammar.Syntax
+import EbnfGrammar.Token (Token)
 import Prettyprinter
 import Text.StdToken (StdToken(..))
 

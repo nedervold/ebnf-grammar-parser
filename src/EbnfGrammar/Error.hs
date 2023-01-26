@@ -1,20 +1,13 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
 module EbnfGrammar.Error
-  ( Posn(..)
-  , Error(..)
+  ( Error(..)
   ) where
 
 import Data.Data (Data)
 import qualified Data.Set as S
-
-data Posn =
-  Posn
-    { charOffset :: !Int
-    , lineNumber :: !Int
-    , columnNumber :: !Int
-    }
-  deriving (Data, Eq, Ord, Show)
+import EbnfGrammar.Posn
+import EbnfGrammar.Syntax
 
 data Error
   = ScanError
@@ -28,4 +21,7 @@ data Error
   | NonUniqueHeads [(String, [Posn])]
   | NonUniqueConstructors [(String, [Posn])]
   | UndefinedNTs (S.Set String)
+  | UnproductiveError (S.Set PA)
+  | UnreachableError (S.Set String)
+  | NullAmbiguitiesError [Term]
   deriving (Show)
