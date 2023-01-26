@@ -30,6 +30,7 @@ library
       EbnfGrammar.Prettyprinter
       EbnfGrammar.Scanner
       EbnfGrammar.Syntax
+      EbnfGrammar.Validation
       Lib
   other-modules:
       Paths_ebnf_grammar_parser
@@ -39,6 +40,7 @@ library
   build-depends:
       array
     , base >=4.7 && <5
+    , containers
     , ebnf-extensions
     , mtl
     , prettyprinter
@@ -56,6 +58,7 @@ executable ebnf-grammar-parser-exe
   build-depends:
       array
     , base >=4.7 && <5
+    , containers
     , ebnf-extensions
     , ebnf-grammar-parser
     , mtl
@@ -75,6 +78,7 @@ test-suite ebnf-grammar-parser-test
   build-depends:
       array
     , base >=4.7 && <5
+    , containers
     , ebnf-extensions
     , ebnf-grammar-parser
     , mtl

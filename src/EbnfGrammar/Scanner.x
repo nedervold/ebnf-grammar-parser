@@ -40,7 +40,7 @@ mkToken :: TokenType -> AlexPosn -> String -> Either Error Token
 mkToken tt (AlexPn o l c) txt = Right $ Token tt txt (Posn o l c)
 
 scanError :: AlexPosn -> String -> Either Error Token
-scanError (AlexPn o l c) txt = throwError $ ScanError (Posn o l c) txt
+scanError (AlexPn o l c) txt = throwError $ ScanError (Just $ Posn o l c) txt
 
 data TokenType
   = COLON
