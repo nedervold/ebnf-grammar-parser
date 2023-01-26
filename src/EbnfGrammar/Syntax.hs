@@ -1,21 +1,28 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module EbnfGrammar.Syntax where
+module EbnfGrammar.Syntax
+  ( Gram(..)
+  , Prod(..)
+  , Alt(..)
+  , Term(..)
+  , Vocab(..)
+  ) where
 
 import Data.Data (Data)
 import Data.Function (on)
 import Data.Generics.Uniplate.Data ()
-import qualified Data.List.NonEmpty as NE
-import EbnfGrammar.Scanner
+import EbnfGrammar.Scanner (Token)
+import Language.Ebnf.Extensions.Syntax (Rep1)
 import Text.StdToken (_tokenText)
 
+{- Note that this is abstract syntax, not concrete. -}
 newtype Gram =
-  Gram (NE.NonEmpty Prod)
+  Gram (Rep1 Prod)
   deriving (Data, Eq, Show)
 
 data Prod =
-  Prod Token (NE.NonEmpty Alt)
+  Prod Token (Rep1 Alt)
   deriving (Data, Eq, Show)
 
 data Alt =

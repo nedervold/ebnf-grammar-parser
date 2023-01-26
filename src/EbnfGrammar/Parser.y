@@ -1,8 +1,9 @@
 {
-{-# LANGUAGE ScopedTypeVariables #-}
-module EbnfGrammar.Parser(parseGrammar, testParse) where
+module EbnfGrammar.Parser(parseGrammar) where
 
+import Control.Monad.Except
 import qualified Data.List.NonEmpty as NE
+import EbnfGrammar.Error
 import EbnfGrammar.Scanner
 import EbnfGrammar.Syntax
 import Text.StdToken
@@ -22,6 +23,7 @@ import Text.StdToken
     UPPER_NAME  { $$@(Token UPPER_NAME  _ _) }
     YIELDS { $$@(Token YIELDS _ _) }
 
+%monad { Either Error }
 %name parseGrammar gram
 
 %%
@@ -59,23 +61,19 @@ term : vocab { VocabTerm $1 }
     | LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE { Repsep0 $2 $4 }
     | LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE_PLUS { Repsep1 $2 $4 }
 
-
 vocab :: { Vocab }
 vocab : LOWER_NAME { NT $1 }
     | UPPER_NAME { T $1 }
 
 {
-happyError :: [Token] -> a
-happyError toks = error ("Parse error: " ++ show toks)
+parseGrammar :: [Token] -> Either Error Gram
 
-testParse :: IO ()
-testParse = do
-     src <- readFile "./Eiffel.ebnf"
-     let toks = scan src
-     let gram :: Gram = parseGrammar toks
-     print gram
-
+happyError :: [Token] -> Either Error a
+happyError toks =
+  throwError $
+  if null toks
+    then ParseError Nothing "<eof>"
+    else ParseError (Just pos) txt
+  where
+    Token _tt txt pos = head toks
 }
-
-
-

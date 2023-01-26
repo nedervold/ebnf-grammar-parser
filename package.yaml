@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - array
 - ebnf-extensions
+- mtl
 - prettyprinter
 - std-token
 - uniplate

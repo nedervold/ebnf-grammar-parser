@@ -1,61 +1,62 @@
 {
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE StandaloneDeriving #-}
-module EbnfGrammar.Scanner(Token, TokenType(..), scan, testScan, AlexPosn(..)) where
+module EbnfGrammar.Scanner(Token, TokenType(..), scan, Posn(..)) where
 
+import Control.Monad.Except
 import Data.Data(Data)
-import Text.StdToken
+import EbnfGrammar.Error(Error(..), Posn(..))
+import Text.StdToken(StdToken(..))
 }
 
 %wrapper "posn"
 
 scanner :-
 
-\:\:\=	{ mkAlexToken YIELDS }
-\:	{ mkAlexToken COLON }
-\.\.\.	{ mkAlexToken ELLIPSIS }
-\.	{ mkAlexToken FULL_STOP }
-\{	{ mkAlexToken LEFT_BRACE }
-\[	{ mkAlexToken LEFT_BRACKET }
-\|	{ mkAlexToken OR }
-\}	{ mkAlexToken RIGHT_BRACE }
-\}\+	{ mkAlexToken RIGHT_BRACE_PLUS }
-\]	{ mkAlexToken RIGHT_BRACKET }
-[a-z_][a-z0-9_]*	{ mkAlexToken LOWER_NAME }
-[A-Z_][A-Z0-9_]*	{ mkAlexToken UPPER_NAME }
-
+\:\:\=	{ mkToken YIELDS }
+\:	{ mkToken COLON }
+\.\.\.	{ mkToken ELLIPSIS }
+\.	{ mkToken FULL_STOP }
+\{	{ mkToken LEFT_BRACE }
+\[	{ mkToken LEFT_BRACKET }
+\|	{ mkToken OR }
+\}\+	{ mkToken RIGHT_BRACE_PLUS }
+\}	{ mkToken RIGHT_BRACE }
+\]	{ mkToken RIGHT_BRACKET }
+[a-z][a-z0-9_]*	{ mkToken LOWER_NAME }
+[A-Z][A-Z0-9_]*	{ mkToken UPPER_NAME }
 
 $white+  ;
 \#.*$ ;
 
+. { scanError }
 {
 
-data TokenType = COLON
-    | ELLIPSIS
-    | FULL_STOP
-    | LEFT_BRACE
-    | LEFT_BRACKET
-    | LOWER_NAME
-    | OR
-    | RIGHT_BRACE
-    | RIGHT_BRACE_PLUS
-    | RIGHT_BRACKET
-    | UPPER_NAME 
-    | YIELDS
-    deriving (Data, Eq, Ord, Show)
+mkToken :: TokenType -> AlexPosn -> String -> Either Error Token
+mkToken tt (AlexPn o l c) txt = Right $ Token tt txt (Posn o l c)
 
-type Token = StdToken TokenType String AlexPosn
+scanError :: AlexPosn -> String -> Either Error Token
+scanError (AlexPn o l c) txt = throwError $ ScanError (Posn o l c) txt
 
-deriving instance Data AlexPosn
+data TokenType
+  = COLON
+  | ELLIPSIS
+  | FULL_STOP
+  | LEFT_BRACE
+  | LEFT_BRACKET
+  | LOWER_NAME
+  | OR
+  | RIGHT_BRACE
+  | RIGHT_BRACE_PLUS
+  | RIGHT_BRACKET
+  | UPPER_NAME
+  | YIELDS
+  | SCAN_ERROR
+  deriving (Data, Eq, Ord, Show)
 
-scan :: String -> [Token]
-scan = alexScanTokens
+type Token = StdToken TokenType String Posn
 
-testScan :: IO ()
-testScan = do
-     src <- readFile "./Eiffel.ebnf"
-     print $ scan src
-     
--- [ @code ] [ wrapper ] { macrodef } @id ':-' { rule } [ @code ]
+scan :: String -> Either Error [Token]
+scan = sequenceA . alexScanTokens 
 
 }

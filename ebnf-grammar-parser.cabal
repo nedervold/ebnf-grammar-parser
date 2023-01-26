@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      EbnfGrammar.Error
       EbnfGrammar.Parser
       EbnfGrammar.Prettyprinter
       EbnfGrammar.Scanner
@@ -39,6 +40,7 @@ library
       array
     , base >=4.7 && <5
     , ebnf-extensions
+    , mtl
     , prettyprinter
     , std-token
     , uniplate
@@ -56,6 +58,7 @@ executable ebnf-grammar-parser-exe
     , base >=4.7 && <5
     , ebnf-extensions
     , ebnf-grammar-parser
+    , mtl
     , prettyprinter
     , std-token
     , uniplate
@@ -74,6 +77,7 @@ test-suite ebnf-grammar-parser-test
     , base >=4.7 && <5
     , ebnf-extensions
     , ebnf-grammar-parser
+    , mtl
     , prettyprinter
     , std-token
     , uniplate
