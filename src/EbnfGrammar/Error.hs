@@ -1,6 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module EbnfGrammar.Error where
+module EbnfGrammar.Error
+  ( Posn(..)
+  , Error(..)
+  ) where
 
 import Data.Data (Data)
 

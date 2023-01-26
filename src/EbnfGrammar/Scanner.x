@@ -1,12 +1,17 @@
 {
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE StandaloneDeriving #-}
-module EbnfGrammar.Scanner(Token, TokenType(..), scan, Posn(..)) where
 
-import Control.Monad.Except
-import Data.Data(Data)
-import EbnfGrammar.Error(Error(..), Posn(..))
-import Text.StdToken(StdToken(..))
+module EbnfGrammar.Scanner
+  ( Token
+  , TokenType(..)
+  , scan
+  ) where
+
+import Control.Monad.Except (throwError)
+import Data.Data (Data)
+import EbnfGrammar.Error (Error(..), Posn(..))
+import Text.StdToken (StdToken(..))
 }
 
 %wrapper "posn"
@@ -31,7 +36,6 @@ $white+  ;
 
 . { scanError }
 {
-
 mkToken :: TokenType -> AlexPosn -> String -> Either Error Token
 mkToken tt (AlexPn o l c) txt = Right $ Token tt txt (Posn o l c)
 
@@ -51,12 +55,10 @@ data TokenType
   | RIGHT_BRACKET
   | UPPER_NAME
   | YIELDS
-  | SCAN_ERROR
   deriving (Data, Eq, Ord, Show)
 
 type Token = StdToken TokenType String Posn
 
 scan :: String -> Either Error [Token]
-scan = sequenceA . alexScanTokens 
-
+scan = sequenceA . alexScanTokens
 }

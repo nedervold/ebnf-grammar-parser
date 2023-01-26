@@ -8,10 +8,10 @@ module EbnfGrammar.Prettyprinter
 
 import Data.List (intersperse)
 import qualified Data.List.NonEmpty as NE
-import EbnfGrammar.Scanner
+import EbnfGrammar.Scanner (Token)
 import EbnfGrammar.Syntax
 import Prettyprinter
-import Text.StdToken
+import Text.StdToken (StdToken(..))
 
 instance Pretty Gram where
   pretty (Gram ps) = vcat $ intersperse "" $ map pretty $ NE.toList ps

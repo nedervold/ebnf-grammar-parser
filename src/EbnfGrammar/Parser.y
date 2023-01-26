@@ -1,12 +1,16 @@
 {
-module EbnfGrammar.Parser(parseGrammar) where
+module EbnfGrammar.Parser
+  ( parseGrammar
+  , parseGrammarFromString
+  , parseGrammarFromFile
+  ) where
 
-import Control.Monad.Except
+import Control.Monad.Except(throwError)
 import qualified Data.List.NonEmpty as NE
-import EbnfGrammar.Error
-import EbnfGrammar.Scanner
+import EbnfGrammar.Error(Error(..))
+import EbnfGrammar.Scanner(Token, TokenType(..), scan)
 import EbnfGrammar.Syntax
-import Text.StdToken
+import Text.StdToken(StdToken(..))
 }
 
 %tokentype { Token }
@@ -66,8 +70,6 @@ vocab : LOWER_NAME { NT $1 }
     | UPPER_NAME { T $1 }
 
 {
-parseGrammar :: [Token] -> Either Error Gram
-
 happyError :: [Token] -> Either Error a
 happyError toks =
   throwError $
@@ -76,4 +78,13 @@ happyError toks =
     else ParseError (Just pos) txt
   where
     Token _tt txt pos = head toks
+
+parseGrammar :: [Token] -> Either Error Gram
+parseGrammarFromString :: String -> Either Error Gram
+parseGrammarFromString src = do
+  toks <- scan src
+  parseGrammar toks
+
+parseGrammarFromFile :: FilePath -> IO (Either Error Gram)
+parseGrammarFromFile fp = parseGrammarFromString <$> readFile fp
 }
