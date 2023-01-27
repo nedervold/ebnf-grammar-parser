@@ -17,7 +17,7 @@ data Error
       }
   | NonUniqueHeads [(String, [Posn])]
   | NonUniqueConstructors [(String, [Posn])]
-  | UndefinedNTs (S.Set String)
+  | UndefinedNonterminals (S.Set String)
   | UnproductiveError (S.Set PA)
   | UnreachableError (S.Set String)
   | NullAmbiguitiesError [Term]

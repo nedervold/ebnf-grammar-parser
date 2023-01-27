@@ -32,7 +32,14 @@ library
       EbnfGrammar.Scanner
       EbnfGrammar.Syntax
       EbnfGrammar.Token
+      EbnfGrammar.Utils
       EbnfGrammar.Validation
+      EbnfGrammar.Validation.NullAmbiguities
+      EbnfGrammar.Validation.Productivity
+      EbnfGrammar.Validation.UndefinedNonterminals
+      EbnfGrammar.Validation.UniqueConstructors
+      EbnfGrammar.Validation.UniqueHeads
+      EbnfGrammar.Validation.UnusedVocab
       Lib
   other-modules:
       Paths_ebnf_grammar_parser
