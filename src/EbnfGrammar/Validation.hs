@@ -175,7 +175,7 @@ checkProductivity g =
             isProductiveProdName :: String -> Bool
             isProductiveProdName str =
               str `elem`
-              [_tokenText hd | P (Prod hd _) <- S.toList $ isProductive]
+              [_tokenText hd | P (Prod hd _) <- S.toList isProductive]
 
 ensureCtors :: Gram -> Gram
 ensureCtors (Gram ps) = Gram $ fmap ensureCtorProd ps
@@ -191,10 +191,7 @@ monotoneFixedPoint ::
   => (a -> a)
   -> a
   -> a
-monotoneFixedPoint f a =
-  case find (uncurry (==)) pairs of
-    Nothing -> undefined
-    Just pair -> fst pair
+monotoneFixedPoint f a = maybe undefined fst $ find (uncurry (==)) pairs
   where
     monotoneSeq :: [a]
     monotoneSeq = iterate f a
@@ -234,12 +231,10 @@ nullables (Gram ps) = monotoneFixedPoint calcNullables S.empty
     calcNullables = flip (foldl' calcNullable) $ NE.toList ps
       where
         calcNullable :: S.Set String -> Prod -> S.Set String
-        calcNullable nullables' (Prod hd alts) =
-          if hdSym `S.member` nullables'
-            then nullables'
-            else if any isNullableAlt (NE.toList alts)
-                   then S.insert hdSym nullables'
-                   else nullables'
+        calcNullable nullables' (Prod hd alts)
+          | hdSym `S.member` nullables' = nullables'
+          | any isNullableAlt (NE.toList alts) = S.insert hdSym nullables'
+          | otherwise = nullables'
           where
             hdSym = _tokenText hd
             isNullableAlt :: Alt -> Bool

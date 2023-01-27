@@ -4,7 +4,7 @@ build :
 
 .PHONY : run
 run : build
-	stack exec -- ebnf-grammar-parser-exe
+	stack exec -- ebnf-grammar-parser-exe | more
 
 .PHONY : docs
 docs :

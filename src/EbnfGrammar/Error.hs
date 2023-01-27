@@ -1,10 +1,7 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-
 module EbnfGrammar.Error
   ( Error(..)
   ) where
 
-import Data.Data (Data)
 import qualified Data.Set as S
 import EbnfGrammar.Posn
 import EbnfGrammar.Syntax
