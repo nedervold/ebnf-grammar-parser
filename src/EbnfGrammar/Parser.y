@@ -7,7 +7,7 @@ module EbnfGrammar.Parser
   ) where
 
 import Control.Monad.Except(throwError)
-import Control.Monad.Reader(Reader, ask, runReader)
+import Control.Monad.Reader(Reader, asks, runReader, withReader)
 import qualified Data.List.NonEmpty as NE
 import EbnfGrammar.Error(Error(..))
 import EbnfGrammar.Scanner(scan)
@@ -46,16 +46,17 @@ prod :: { Prod }
 prod : LOWER_NAME YIELDS alts FULL_STOP
      { Prod $1 (NE.fromList $ runReader $3 $1) }
 
-alts :: { R [Alt] }
+alts :: { Reader HdEnv [Alt] }
 alts : alts OR alt { liftA2 (\x1 x3 ->  x1 ++ [x3]) $1 $3 }
      | alt { fmap pure $1 }
 
-alt :: { R Alt }
-alt : opt_lower_name COLON terms { fmap (flip Alt $3) $1 }
+alt :: { Reader HdEnv Alt }
+alt : opt_lower_name COLON terms
+          { fmap (flip Alt $3) (withReader (addColon $2) $1) }
 
-opt_lower_name :: { R Token }
+opt_lower_name :: { Reader HdColonEnv Token }
 opt_lower_name : LOWER_NAME { pure $1 }
-    | { ask }
+    | { asks (\(hd, c) -> hd { _tokenDeco = _tokenDeco c })}
 
 terms :: { [Term] }
 terms : terms term { $1 ++ [$2] }
@@ -74,7 +75,12 @@ vocab : LOWER_NAME { NT $1 }
     | UPPER_NAME { T $1 }
 
 {
-type R = Reader Token
+type HdEnv = Token
+
+type HdColonEnv = (Token, Token)
+
+addColon :: Token -> HdEnv -> HdColonEnv
+addColon c hd = (hd, c)
 
 happyError :: [Token] -> Either Error a
 happyError toks =
