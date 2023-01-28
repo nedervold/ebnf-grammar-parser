@@ -15,7 +15,7 @@ checkUniqueConstructors :: Gram -> Either Error Gram
 checkUniqueConstructors g@(Gram ps) =
   if null multiples
     then pure g
-    else throwError $ NonUniqueConstructorsError multiples
+    else throwError $ OldError $ NonUniqueConstructorsError multiples
   where
     multiples :: [(String, [Posn])]
     multiples = fmap (fmap sort) $ filter isMultiple $ collectOnFirst pairs

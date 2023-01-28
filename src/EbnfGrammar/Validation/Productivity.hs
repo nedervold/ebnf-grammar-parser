@@ -27,7 +27,7 @@ checkProductivity :: Gram -> Either Error Gram
 checkProductivity gram =
   if S.null unproductives
     then pure gram
-    else throwError $ UnproductiveError unproductives
+    else throwError $ OldError $ UnproductiveError unproductives
   where
     unproductives :: S.Set PA
     unproductives = S.fromList [pa | (pa, False) <- M.toList productiveMap]

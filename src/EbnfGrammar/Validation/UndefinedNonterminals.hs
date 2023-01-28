@@ -17,7 +17,8 @@ checkUndefinedNonterminals g@(Gram ps)
  =
   if S.null undefinedNonterminals
     then pure g
-    else throwError $ UndefinedNonterminalsError undefinedNonterminals
+    else throwError $
+         OldError $ UndefinedNonterminalsError undefinedNonterminals
   where
     defined :: [String]
     altss :: [[Alt]]

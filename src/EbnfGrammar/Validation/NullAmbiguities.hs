@@ -17,7 +17,7 @@ checkNullAmbiguities :: Gram -> Either Error Gram
 checkNullAmbiguities g =
   if null ambiguousTerms
     then pure g
-    else throwError $ NullAmbiguitiesError ambiguousTerms
+    else throwError $ OldError $ NullAmbiguitiesError ambiguousTerms
   where
     ambiguousTerms :: [Term]
     ambiguousTerms = filter isAmbiguous $ universeBi g

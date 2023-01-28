@@ -16,7 +16,7 @@ checkUnusedVocab :: Gram -> Either Error Gram
 checkUnusedVocab g@(Gram ps) =
   if S.null unreachables
     then pure g
-    else throwError $ UnreachableError unreachables
+    else throwError $ OldError $ UnreachableError unreachables
   where
     unreachables :: S.Set String
     unreachables = allSymbols S.\\ reachables
