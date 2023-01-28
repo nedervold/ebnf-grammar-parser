@@ -52,10 +52,9 @@ data Error
 
 instance Pretty Error where
   pretty Error {..} =
-    hsep
-      [ pretty errorPosn <> ":"
-      , pretty (show errorType ++ ":")
-      , pretty errorText
+    vsep
+      [ hsep [pretty errorPosn, pretty (show errorType ++ ":")]
+      , indent 4 $ pretty errorText
       ]
   pretty (OldError oe) = pretty oe
 

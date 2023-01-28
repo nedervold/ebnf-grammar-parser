@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module EbnfGrammar.Validation.UniqueHeads
   ( checkUniqueHeads
   , chooseOne
@@ -27,11 +29,12 @@ checkUniqueHeads g@(Gram ps) =
         [ Error posn DuplicateHeadError' msg
         | (hd, posns) <- multiples
         , (posn, posns') <- chooseOne posns
+        -- TODO Mixing printf and prettyprinting is wrong.
         , let msg =
                 printf
-                  "Duplicate head %s: also appears at %s"
+                  "%s also defined at %s."
                   (show hd)
-                  (show (prettyList posns') :: String)
+                  (show (sep $ punctuate "," $ map pretty posns') :: String)
         ]
     multiples :: [(String, [Posn])]
     multiples = fmap (fmap sort) $ filter isMultiple $ collectOnFirst pairs
