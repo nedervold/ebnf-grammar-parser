@@ -1,0 +1,15 @@
+gram ::= gram : { prod }+.
+
+prod ::= prod : LOWER_NAME YIELDS { alt ... OR }+.
+
+alt ::= alt : [ LOWER_NAME ] COLON { term } FULL_STOP.
+
+term ::= vocab_term : vocab
+    | opt : LEFT_BRACKET vocab RIGHT_BRACKET
+    | rep0 : LEFT_BRACE vocab RIGHT_BRACE
+    | rep1 : LEFT_BRACE vocab RIGHT_BRACE_PLUS
+    | repsep0 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE
+    | repsep1 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE_PLUS.
+
+vocab ::= nonterm : LOWER_NAME
+    | term : UPPER_NAME.

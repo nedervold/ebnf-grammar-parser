@@ -3,9 +3,11 @@
 module EbnfGrammar.Utils
   ( collectOnFirst
   , monotoneFixedPoint
+  , monotoneMapFixedPoint
   ) where
 
 import Data.List (find, nub, sort)
+import qualified Data.Map as M
 
 collectOnFirst ::
      forall a b. Ord a
@@ -27,3 +29,13 @@ monotoneFixedPoint f a = maybe err fst $ find (uncurry (==)) pairs
     monotoneSeq = iterate f a
     pairs = zip monotoneSeq (tail monotoneSeq)
     err = error "error: monotoneFixedPoint never converged"
+
+monotoneMapFixedPoint ::
+     forall k v. (Eq k, Eq v)
+  => (M.Map k v -> k -> v)
+  -> M.Map k v
+  -> M.Map k v
+monotoneMapFixedPoint f = monotoneFixedPoint f'
+  where
+    f' :: M.Map k v -> M.Map k v
+    f' m = M.fromSet (f m) (M.keysSet m)

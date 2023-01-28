@@ -4,6 +4,7 @@ module EbnfGrammar.Validation
   ( parseGrammar
   , parseGrammarFromString
   , parseGrammarFromFile
+  , parseGrammarFromStdin
   ) where
 
 import Control.Monad ((>=>))
@@ -41,6 +42,13 @@ parseGrammarFromString src = do
 parseGrammarFromFile :: FilePath -> IO (Either Error Gram)
 parseGrammarFromFile fp = do
   eGram <- P.parseGrammarFromFile fp
+  pure $ do
+    gram <- eGram
+    validateGrammar gram
+
+parseGrammarFromStdin :: IO (Either Error Gram)
+parseGrammarFromStdin = do
+  eGram <- P.parseGrammarFromStdin
   pure $ do
     gram <- eGram
     validateGrammar gram

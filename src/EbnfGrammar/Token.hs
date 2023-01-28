@@ -1,6 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module EbnfGrammar.Token where
+module EbnfGrammar.Token
+  ( Token
+  , TokenType(..)
+  ) where
 
 import Data.Data (Data)
 import EbnfGrammar.Posn (Posn(..))

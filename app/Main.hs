@@ -3,12 +3,12 @@ module Main
   ) where
 
 import EbnfGrammar.Prettyprinter ()
-import EbnfGrammar.Validation (parseGrammarFromFile)
+import EbnfGrammar.Validation (parseGrammarFromStdin)
 import Prettyprinter (pretty)
 
 main :: IO ()
 main = do
-  eGram <- parseGrammarFromFile "EiffelGram.ebnf"
+  eGram <- parseGrammarFromStdin
   case eGram of
-    Left err -> error $ show err
+    Left err -> error $ show $ pretty err
     Right gram -> print $ pretty gram

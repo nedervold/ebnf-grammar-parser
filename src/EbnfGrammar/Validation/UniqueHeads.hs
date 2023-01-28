@@ -1,4 +1,6 @@
-module EbnfGrammar.Validation.UniqueHeads where
+module EbnfGrammar.Validation.UniqueHeads
+  ( checkUniqueHeads
+  ) where
 
 import Control.Monad.Except (throwError)
 import Data.List (sort)

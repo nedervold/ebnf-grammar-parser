@@ -39,6 +39,7 @@ checkNullAmbiguities g =
     isAmbiguous _ = False
 
 nullables :: Gram -> S.Set String
+-- TODO Switch to use a Map.
 nullables (Gram ps) = monotoneFixedPoint calcNullables S.empty
   where
     calcNullables :: S.Set String -> S.Set String

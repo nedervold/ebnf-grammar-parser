@@ -3,6 +3,7 @@ module EbnfGrammar.Parser
   ( parseGrammar
   , parseGrammarFromString
   , parseGrammarFromFile
+  , parseGrammarFromStdin
   ) where
 
 import Control.Monad.Except(throwError)
@@ -92,4 +93,7 @@ parseGrammarFromString src = do
 
 parseGrammarFromFile :: FilePath -> IO (Either Error Gram)
 parseGrammarFromFile fp = parseGrammarFromString <$> readFile fp
+
+parseGrammarFromStdin :: IO (Either Error Gram)
+parseGrammarFromStdin = parseGrammarFromString <$> getContents
 }

@@ -38,7 +38,7 @@ instance Pretty Term where
   pretty (Rep0 b) = braces' $ pretty b
   pretty (Rep1 b) = braces' (pretty b) <> "+"
   pretty (Repsep0 b s) = braces' (hsep [pretty b, "...", pretty s])
-  pretty (Repsep1 b s) = braces' (hsep [pretty b, "...", pretty s])
+  pretty (Repsep1 b s) = braces' (hsep [pretty b, "...", pretty s]) <> "+"
 
 instance Pretty Vocab where
   pretty (NT tok) = pretty $ _tokenText tok
@@ -46,3 +46,7 @@ instance Pretty Vocab where
 
 instance Pretty Token where
   pretty tok = pretty $ _tokenText tok
+
+instance Pretty PA where
+  pretty (P prod) = pretty prod
+  pretty (A alt) = pretty alt
