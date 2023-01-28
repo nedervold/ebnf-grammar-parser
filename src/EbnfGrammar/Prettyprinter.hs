@@ -24,16 +24,21 @@ instance Pretty Prod where
       seps = "::=" : repeat "|"
 
 instance Pretty Alt where
-  pretty (Alt (Just ctor) ts) = pretty ctor <+> ":" <+> fillSep (map pretty ts)
-  pretty (Alt Nothing ts) = ":" <+> fillSep (map pretty ts)
+  pretty (Alt ctor ts) = pretty ctor <+> ":" <+> fillSep (map pretty ts)
+
+braces' :: Doc ann -> Doc ann
+braces' d = hsep ["{", d, "}"]
+
+brackets' :: Doc ann -> Doc ann
+brackets' d = hsep ["[", d, "]"]
 
 instance Pretty Term where
   pretty (VocabTerm t) = pretty t
-  pretty (Opt b) = brackets $ pretty b
-  pretty (Rep0 b) = braces $ pretty b
-  pretty (Rep1 b) = braces (pretty b) <> "+"
-  pretty (Repsep0 b s) = braces (hsep [pretty b, "...", pretty s])
-  pretty (Repsep1 b s) = braces (hsep [pretty b, "...", pretty s])
+  pretty (Opt b) = brackets' $ pretty b
+  pretty (Rep0 b) = braces' $ pretty b
+  pretty (Rep1 b) = braces' (pretty b) <> "+"
+  pretty (Repsep0 b s) = braces' (hsep [pretty b, "...", pretty s])
+  pretty (Repsep1 b s) = braces' (hsep [pretty b, "...", pretty s])
 
 instance Pretty Vocab where
   pretty (NT tok) = pretty $ _tokenText tok

@@ -5,7 +5,6 @@ module EbnfGrammar.Validation.UniqueConstructors
 import Control.Monad.Except
 import Data.List (sort)
 import qualified Data.List.NonEmpty as NE
-import Data.Maybe (fromMaybe)
 import EbnfGrammar.Error
 import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
@@ -25,7 +24,6 @@ checkUniqueConstructors g@(Gram ps) =
     pairs :: [(String, Posn)]
     pairs =
       [ (_tokenText ctor, _tokenDeco ctor)
-      | Prod hd alts <- NE.toList ps
-      , Alt mCtor _ <- NE.toList alts
-      , let ctor = fromMaybe hd mCtor
+      | Prod _hd alts <- NE.toList ps
+      , Alt ctor _ <- NE.toList alts
       ]

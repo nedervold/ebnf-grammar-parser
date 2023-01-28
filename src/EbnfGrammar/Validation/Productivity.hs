@@ -8,21 +8,20 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Syntax
-import EbnfGrammar.Utils (ensureCtors, monotoneFixedPoint)
+import EbnfGrammar.Utils (monotoneFixedPoint)
 import Text.StdToken
 
 -- TODO If I've already determined there are no duplicate heads...  I
 -- can define Ord via the head.
 checkProductivity :: Gram -> Either Error Gram
 -- make a table of prods and alts and recurse to a fixed point
-checkProductivity g =
+checkProductivity g@(Gram ps) =
   if S.null unproductives
     then pure g
     else throwError $ UnproductiveError unproductives
   where
     unproductives :: S.Set PA
     unproductives = allPA S.\\ productives
-    Gram ps = ensureCtors g
     allPA :: S.Set PA
     allPA =
       S.fromList $

@@ -28,7 +28,7 @@ data Prod =
   deriving (Data, Eq, Show)
 
 data Alt =
-  Alt (Maybe Token) [Term]
+  Alt Token [Term]
   deriving (Data, Eq, Show)
 
 ------------------------------
@@ -41,12 +41,9 @@ instance Ord PA
   -- assume no duplicate heads, no duplicate constructors
                                                           where
   compare (P (Prod hd _)) (P (Prod hd' _)) = comparing _tokenText hd hd'
-  compare (A (Alt (Just ctor) _)) (A (Alt (Just ctor') _)) =
-    comparing _tokenText ctor ctor'
+  compare (A (Alt ctor _)) (A (Alt ctor' _)) = comparing _tokenText ctor ctor'
   compare (P _) (A (Alt _ _)) = LT
   compare (A (Alt _ _)) (P _) = GT
-  compare (A (Alt Nothing _)) _ = error "impossible"
-  compare _ (A (Alt Nothing _)) = error "impossible"
 
 ------------------------------
 data Term

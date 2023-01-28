@@ -2,22 +2,10 @@
 
 module EbnfGrammar.Utils
   ( collectOnFirst
-  , ensureCtors
   , monotoneFixedPoint
   ) where
 
 import Data.List (find, nub, sort)
-import EbnfGrammar.Syntax
-import EbnfGrammar.Token (Token)
-
-ensureCtors :: Gram -> Gram
-ensureCtors (Gram ps) = Gram $ fmap ensureCtorProd ps
-  where
-    ensureCtorProd :: Prod -> Prod
-    ensureCtorProd (Prod hd alts) = Prod hd $ fmap (ensureCtorAlt hd) alts
-    ensureCtorAlt :: Token -> Alt -> Alt
-    ensureCtorAlt hd (Alt Nothing ts) = Alt (Just hd) ts
-    ensureCtorAlt _ a = a
 
 collectOnFirst ::
      forall a b. Ord a
