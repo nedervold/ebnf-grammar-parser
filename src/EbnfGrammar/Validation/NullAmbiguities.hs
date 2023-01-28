@@ -45,7 +45,7 @@ nullables (Gram ps) = monotoneMapFixedPoint f initMap
     ntLookup =
       M.fromList [(_tokenText hd, prod) | prod@(Prod hd _) <- NE.toList ps]
     initMap :: M.Map String Bool
-    initMap = const False <$> ntLookup
+    initMap = False <$ ntLookup
     f :: M.Map String Bool -> String -> Bool
     f m nt = m M.! nt || isNullableProd (ntLookup M.! nt)
       where

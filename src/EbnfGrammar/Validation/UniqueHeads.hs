@@ -15,7 +15,7 @@ checkUniqueHeads :: Gram -> Either Error Gram
 checkUniqueHeads g@(Gram ps) =
   if null multiples
     then pure g
-    else throwError $ NonUniqueHeads multiples
+    else throwError $ NonUniqueHeadsError multiples
   where
     multiples :: [(String, [Posn])]
     multiples = fmap (fmap sort) $ filter isMultiple $ collectOnFirst pairs
