@@ -1,17 +1,34 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module EbnfGrammar.Error
   ( Error(..)
-  , ErrorType
+  , Errors(..)
+  , throwErrors
+  , ErrorType(..)
   , OldError(..)
   ) where
 
+import Control.Monad.Except
 import qualified Data.Set as S
 import EbnfGrammar.Posn
 import EbnfGrammar.Prettyprinter ()
 import EbnfGrammar.Syntax
 import Prettyprinter
+
+newtype Errors =
+  Errors
+    { unErrors :: S.Set Error
+    }
+  deriving (Semigroup, Monoid)
+
+throwErrors :: MonadError Errors m => Error -> m a
+throwErrors = throwError . Errors . S.singleton
+
+instance Pretty Errors where
+  pretty errs = vcat $ map pretty $ S.toList $ unErrors errs
 
 data ErrorType
   = ScanError'
@@ -40,18 +57,10 @@ instance Pretty Error where
       , pretty (show errorType ++ ":")
       , pretty errorText
       ]
+  pretty (OldError oe) = pretty oe
 
 data OldError
-  = ScanError
-      { scanErrorPosn :: Maybe Posn
-      , scanErrorText :: String
-      }
-  | ParseError
-      { parseErrorPosn :: Maybe Posn
-      , parseErrorText :: String
-      }
-  | NonUniqueHeadsError [(String, [Posn])]
-  | NonUniqueConstructorsError [(String, [Posn])]
+  = NonUniqueConstructorsError [(String, [Posn])]
   | UndefinedNonterminalsError (S.Set String)
   | UnproductiveError (S.Set PA)
   | UnreachableError (S.Set String)
@@ -66,9 +75,6 @@ instance Ord OldError where
 
 -- TODO /Much/ more to do.
 instance Pretty OldError where
-  pretty ScanError {} = "ScanError"
-  pretty ParseError {} = "ParseError"
-  pretty NonUniqueHeadsError {} = "NonUniqueHeadsError"
   pretty NonUniqueConstructorsError {} = "NonUniqueConstructorsError"
   pretty UndefinedNonterminalsError {} = "UndefinedNonterminalsError"
   pretty (UnproductiveError pas) =

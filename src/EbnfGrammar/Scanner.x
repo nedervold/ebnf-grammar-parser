@@ -6,10 +6,10 @@ module EbnfGrammar.Scanner
   ( scan
   ) where
 
-import Control.Monad.Except (throwError)
-import EbnfGrammar.Error (Error(..), OldError(..))
+import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwErrors)
 import EbnfGrammar.Posn (Posn(..))
-import EbnfGrammar.Token(Token, TokenType(..))
+import EbnfGrammar.Token (Token, TokenType(..))
+import Text.Printf (printf)
 import Text.StdToken (StdToken(..))
 }
 
@@ -35,13 +35,17 @@ $white+  ;
 
 . { scanError }
 {
-mkToken :: TokenType -> AlexPosn -> String -> Either Error Token
+mkToken :: TokenType -> AlexPosn -> String -> Either Errors Token
 mkToken tt (AlexPn o l c) txt = Right $ Token tt txt (Posn o l c)
 
-scanError :: AlexPosn -> String -> Either Error Token
+scanError :: AlexPosn -> String -> Either Errors Token
 scanError (AlexPn o l c) txt =
-  throwError $ OldError $ ScanError (Just $ Posn o l c) txt
+  throwErrors $
+  Error
+    (Posn o l c)
+    ScanError'
+    (printf "scan error at char %s" $ show $ head txt)
 
-scan :: String -> Either Error [Token]
+scan :: String -> Either Errors [Token]
 scan = sequenceA . alexScanTokens
 }

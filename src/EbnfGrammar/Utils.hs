@@ -1,13 +1,19 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module EbnfGrammar.Utils
-  ( collectOnFirst
+  ( chooseOne
+  , collectOnFirst
   , monotoneFixedPoint
   , monotoneMapFixedPoint
   ) where
 
 import Data.List (find, nub, sort)
 import qualified Data.Map as M
+
+chooseOne :: [p] -> [(p, [p])]
+chooseOne [] = []
+chooseOne [p] = [(p, [])]
+chooseOne (p:ps) = (p, ps) : fmap (fmap (p :)) (chooseOne ps)
 
 collectOnFirst ::
      forall a b. Ord a
