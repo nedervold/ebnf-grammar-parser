@@ -4,6 +4,7 @@ build :
 
 .PHONY : run
 run : build
+	# cat Ebnf.ebnf | stack exec -- ebnf-grammar-parser-exe
 	cat EiffelGram.ebnf | stack exec -- ebnf-grammar-parser-exe | more
 
 .PHONY : docs

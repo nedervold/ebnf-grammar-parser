@@ -4,12 +4,12 @@ module EbnfGrammar.Validation.NullAmbiguities
 
 import Control.Monad.Except
 import Data.Generics.Uniplate.Operations
-import Data.List (foldl')
 import qualified Data.List.NonEmpty as NE
+import qualified Data.Map as M
 import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Syntax
-import EbnfGrammar.Utils (monotoneFixedPoint)
+import EbnfGrammar.Utils (monotoneMapFixedPoint)
 import Text.StdToken
 
 checkNullAmbiguities :: Gram -> Either Error Gram
@@ -22,7 +22,7 @@ checkNullAmbiguities g =
     ambiguousTerms :: [Term]
     ambiguousTerms = filter isAmbiguous $ universeBi g
     nullableNTs :: S.Set String
-    nullableNTs = nullables g
+    nullableNTs = S.fromList [str | (str, True) <- M.toList $ nullables g]
     isAmbiguous :: Term -> Bool
     isAmbiguous (Opt b) =
       case b of
@@ -38,31 +38,26 @@ checkNullAmbiguities g =
         T _ -> False
     isAmbiguous _ = False
 
-nullables :: Gram -> S.Set String
--- TODO Switch to use a Map.
-nullables (Gram ps) = monotoneFixedPoint calcNullables S.empty
+nullables :: Gram -> M.Map String Bool
+nullables (Gram ps) = monotoneMapFixedPoint f initMap
   where
-    calcNullables :: S.Set String -> S.Set String
-    calcNullables = flip (foldl' calcNullable) $ NE.toList ps
+    ntLookup :: M.Map String Prod
+    ntLookup =
+      M.fromList [(_tokenText hd, prod) | prod@(Prod hd _) <- NE.toList ps]
+    initMap :: M.Map String Bool
+    initMap = const False <$> ntLookup
+    f :: M.Map String Bool -> String -> Bool
+    f m nt = m M.! nt || isNullableProd (ntLookup M.! nt)
       where
-        calcNullable :: S.Set String -> Prod -> S.Set String
-        calcNullable nullables' (Prod hd alts)
-          | hdSym `S.member` nullables' = nullables'
-          | any isNullableAlt (NE.toList alts) = S.insert hdSym nullables'
-          | otherwise = nullables'
-          where
-            hdSym = _tokenText hd
-            isNullableAlt :: Alt -> Bool
-            isNullableAlt (Alt _ ts) = all isNullableTerm ts
-            isNullableTerm :: Term -> Bool
-            isNullableTerm t =
-              case t of
-                VocabTerm v -> isNullableVocab v
-                Rep1 v -> isNullableVocab v
-                Repsep1 b _ -> isNullableVocab b
-                _ -> True
-            isNullableVocab :: Vocab -> Bool
-            isNullableVocab v =
-              case v of
-                T _ -> False
-                NT tok -> _tokenText tok `S.member` nullables'
+        isNullableProd (Prod _ alts) = any isNullableAlt alts
+        isNullableAlt (Alt _ ts) = all isNullableTerm ts
+        isNullableTerm t =
+          case t of
+            VocabTerm v -> isNullableVocab v
+            Opt _ -> True
+            Rep0 _ -> True
+            Rep1 b -> isNullableVocab b
+            Repsep0 _ _ -> True
+            Repsep1 b _ -> isNullableVocab b
+        isNullableVocab (T _) = False
+        isNullableVocab (NT tok) = m M.! _tokenText tok
