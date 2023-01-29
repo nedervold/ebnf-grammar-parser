@@ -8,7 +8,6 @@ module EbnfGrammar.Validation.Productivity
   ( checkProductivity
   ) where
 
-import Control.Monad.Except (throwError)
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -33,9 +32,7 @@ checkProductivity :: Gram -> Either Errors Gram
 checkProductivity gram =
   if S.null unproductives
     then pure gram
-    else throwError $
-         Errors $
-         S.fromList
+    else throwErrorList
            [ Error posn UnproductiveError msg
            | pa <- S.toList unproductives
            , let posn = posnMap M.! pa

@@ -7,7 +7,8 @@
 module EbnfGrammar.Error
   ( Error(..)
   , Errors(..)
-  , throwErrors
+  , throwSingleError
+  , throwErrorList
   , ErrorType(..)
   ) where
 
@@ -23,8 +24,11 @@ newtype Errors =
     }
   deriving (Semigroup, Monoid)
 
-throwErrors :: MonadError Errors m => Error -> m a
-throwErrors = throwError . Errors . S.singleton
+throwErrorList :: MonadError Errors m => [Error] -> m a
+throwErrorList = throwError . Errors . S.fromList
+
+throwSingleError :: MonadError Errors m => Error -> m a
+throwSingleError = throwErrorList . pure
 
 instance Pretty Errors where
   pretty errs = vcat $ map pretty $ S.toList $ unErrors errs

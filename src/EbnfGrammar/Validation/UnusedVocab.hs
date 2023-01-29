@@ -6,7 +6,6 @@ module EbnfGrammar.Validation.UnusedVocab
 
 import Algebra.Graph.AdjacencyMap
 import Algebra.Graph.AdjacencyMap.Algorithm
-import Control.Monad.Except
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import EbnfGrammar.Error
@@ -20,13 +19,11 @@ checkUnusedVocab :: Gram -> Either Errors Gram
 checkUnusedVocab g@(Gram ps) =
   if S.null unreachables
     then pure g
-    else throwError $
-         Errors $
-         S.fromList
-           [ Error posn UnreachableError $
-           hsep ["The", "nonterminal", pretty $ show str, "is", "unreachable."]
-           | (posn, str) <- locatedUnreachables
-           ]
+    else throwErrorList $
+         [ Error posn UnreachableError $
+         hsep ["The", "nonterminal", pretty $ show str, "is", "unreachable."]
+         | (posn, str) <- locatedUnreachables
+         ]
   where
     locatedUnreachables :: [(Posn, String)]
     locatedUnreachables =

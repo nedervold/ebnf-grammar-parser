@@ -4,7 +4,6 @@ module EbnfGrammar.Validation.UndefinedNonterminals
   ( checkUndefinedNonterminals
   ) where
 
-import Control.Monad.Except
 import Data.Generics.Uniplate.Data ()
 import Data.Generics.Uniplate.Operations
 import qualified Data.List.NonEmpty as NE
@@ -18,9 +17,7 @@ checkUndefinedNonterminals :: Gram -> Either Errors Gram
 checkUndefinedNonterminals g@(Gram ps) =
   if S.null undefinedNonterminals
     then pure g
-    else throwError $
-         Errors $
-         S.fromList
+    else throwErrorList
            [ Error
              (_tokenDeco tok)
              UndefinedNonterminalError

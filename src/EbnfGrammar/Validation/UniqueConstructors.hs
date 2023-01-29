@@ -4,10 +4,8 @@ module EbnfGrammar.Validation.UniqueConstructors
   ( checkUniqueConstructors
   ) where
 
-import Control.Monad.Except
 import Data.List (sort)
 import qualified Data.List.NonEmpty as NE
-import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
@@ -19,9 +17,7 @@ checkUniqueConstructors :: Gram -> Either Errors Gram
 checkUniqueConstructors g@(Gram ps) =
   if null multiples
     then pure g
-    else throwError $
-         Errors $
-         S.fromList
+    else throwErrorList
            [ Error posn DuplicateConstructorError msg
            | (ctor, posns) <- multiples
            , (posn, posns') <- chooseOne posns

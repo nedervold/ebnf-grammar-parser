@@ -4,7 +4,6 @@ module EbnfGrammar.Validation.NullAmbiguities
   ( checkNullAmbiguities
   ) where
 
-import Control.Monad.Except
 import Data.Generics.Uniplate.Operations
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
@@ -22,9 +21,7 @@ checkNullAmbiguities :: Gram -> Either Errors Gram
 checkNullAmbiguities g =
   if null ambiguousTerms
     then pure g
-    else throwError $
-         Errors $
-         S.fromList
+    else throwErrorList
            [ Error posn AmbiguousNullableError msg
            | term <- ambiguousTerms
            , let posn = termPosn term

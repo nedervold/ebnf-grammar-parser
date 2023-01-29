@@ -9,7 +9,7 @@ module EbnfGrammar.Parser
 
 import Control.Monad.Reader (Reader, asks, runReader, withReader)
 import qualified Data.List.NonEmpty as NE
-import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwErrors)
+import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwSingleError)
 import EbnfGrammar.Posn (Posn(..))
 import EbnfGrammar.Scanner (scan)
 import EbnfGrammar.Syntax
@@ -86,7 +86,7 @@ addColon c hd = (hd, c)
 
 happyError :: [Token] -> Either Errors a
 happyError toks =
-  throwErrors $
+  throwSingleError $
   Error
     (if null toks
        then EOF

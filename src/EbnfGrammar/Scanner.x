@@ -7,7 +7,7 @@ module EbnfGrammar.Scanner
   ( scan
   ) where
 
-import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwErrors)
+import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwSingleError)
 import EbnfGrammar.Posn (Posn(..))
 import EbnfGrammar.Token (Token, TokenType(..))
 import Prettyprinter hiding (column, line)
@@ -41,7 +41,7 @@ mkToken tt (AlexPn o l c) txt = Right $ Token tt txt (Posn o l c)
 
 scanError :: AlexPosn -> String -> Either Errors Token
 scanError (AlexPn o l c) txt =
-  throwErrors $
+  throwSingleError $
   Error
     (Posn o l c)
     ScanError
