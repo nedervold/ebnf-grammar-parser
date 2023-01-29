@@ -10,6 +10,7 @@ import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Syntax
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
+import SafeMap
 import Text.StdToken
 
 checkNullAmbiguities :: Gram -> Either Error Gram
@@ -47,7 +48,7 @@ nullables (Gram ps) = monotoneMapFixedPoint f initMap
     initMap :: M.Map String Bool
     initMap = False <$ ntLookup
     f :: M.Map String Bool -> String -> Bool
-    f m nt = m M.! nt || isNullableProd (ntLookup M.! nt)
+    f m nt = m ! nt || isNullableProd (ntLookup ! nt)
       where
         isNullableProd (Prod _ alts) = any isNullableAlt alts
         isNullableAlt (Alt _ ts) = all isNullableTerm ts
@@ -60,4 +61,4 @@ nullables (Gram ps) = monotoneMapFixedPoint f initMap
             Repsep0 _ _ -> True
             Repsep1 b _ -> isNullableVocab b
         isNullableVocab (T _) = False
-        isNullableVocab (NT tok) = m M.! _tokenText tok
+        isNullableVocab (NT tok) = m ! _tokenText tok

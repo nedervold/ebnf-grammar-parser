@@ -20,5 +20,6 @@ data Posn
   deriving (Data, Eq, Ord, Show)
 
 instance Pretty Posn where
-  pretty Posn {..} = pretty (printf "%d:%d" lineNumber columnNumber :: String)
-  pretty EOF = "<eof>"
+  pretty Posn {..} =
+    pretty (printf "<stdin>:%d:%d" lineNumber columnNumber :: String)
+  pretty EOF = "<stdin>:<eof>"

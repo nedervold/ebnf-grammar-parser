@@ -41,6 +41,7 @@ library
       EbnfGrammar.Validation.UniqueHeads
       EbnfGrammar.Validation.UnusedVocab
       Lib
+      SafeMap
   other-modules:
       Paths_ebnf_grammar_parser
   hs-source-dirs:

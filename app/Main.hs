@@ -10,5 +10,7 @@ main :: IO ()
 main = do
   eGram <- parseGrammarFromStdin
   case eGram of
-    Left err -> error $ show $ pretty err
+    Left err -> do
+      print $ pretty err
+      error "failed"
     Right gram -> print $ pretty gram

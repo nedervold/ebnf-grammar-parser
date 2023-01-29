@@ -12,16 +12,20 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
 import qualified Data.Set as S
 import EbnfGrammar.Error
+import EbnfGrammar.Posn
 import EbnfGrammar.Syntax
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
+import SafeMap
 import Text.StdToken
 
-initMap :: Gram -> M.Map PA Bool
-initMap (Gram ps) =
-  M.fromSet (const False) $ S.fromList $ concatMap getPAs $ NE.toList ps
+initMap :: Gram -> M.Map PA (Posn, Bool)
+initMap (Gram ps) = M.fromSet f $ S.fromList $ concatMap getPAs $ NE.toList ps
   where
     getPAs :: Prod -> [PA]
     getPAs prod@(Prod _hd alts) = P prod : [A alt | alt <- NE.toList alts]
+    f :: PA -> (Posn, Bool)
+    f (P (Prod hd _)) = (_tokenDeco hd, False)
+    f (A (Alt ctor _)) = (_tokenDeco ctor, False)
 
 checkProductivity :: Gram -> Either Error Gram
 checkProductivity gram =
@@ -31,13 +35,14 @@ checkProductivity gram =
   where
     unproductives :: S.Set PA
     unproductives = S.fromList [pa | (pa, False) <- M.toList productiveMap]
+    iMap = initMap gram
     productiveMap :: M.Map PA Bool
-    productiveMap = monotoneMapFixedPoint calcProductives $ initMap gram
+    productiveMap = monotoneMapFixedPoint calcProductives $ fmap snd iMap
     calcProductives :: M.Map PA Bool -> PA -> Bool
     calcProductives m pa =
-      m M.! pa ||
+      m ! pa ||
       case pa of
-        P (Prod _ alts) -> any (\alt -> m M.! A alt) alts
+        P (Prod _ alts) -> any (\alt -> m ! A alt) alts
         A (Alt _ ts) -> all isProductiveTerm ts
       where
         isProductiveTerm :: Term -> Bool
