@@ -22,7 +22,7 @@ checkUniqueConstructors g@(Gram ps) =
     else throwError $
          Errors $
          S.fromList
-           [ Error posn DuplicateConstructorError' msg
+           [ Error posn DuplicateConstructorError msg
            | (ctor, posns) <- multiples
            , (posn, posns') <- chooseOne posns
            , let msg =

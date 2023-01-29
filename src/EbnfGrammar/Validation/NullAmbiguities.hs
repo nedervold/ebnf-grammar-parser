@@ -25,7 +25,7 @@ checkNullAmbiguities g =
     else throwError $
          Errors $
          S.fromList
-           [ Error posn AmbiguousNullableError' msg
+           [ Error posn AmbiguousNullableError msg
            | term <- ambiguousTerms
            , let posn = termPosn term
            , let msg = termMsg term

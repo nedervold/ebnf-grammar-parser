@@ -36,7 +36,7 @@ checkProductivity gram =
     else throwError $
          Errors $
          S.fromList
-           [ Error posn UnproductiveError' msg
+           [ Error posn UnproductiveError msg
            | pa <- S.toList unproductives
            , let posn = posnMap M.! pa
            , let msg = mkMsg pa

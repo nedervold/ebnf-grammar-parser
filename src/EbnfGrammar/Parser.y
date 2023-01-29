@@ -91,7 +91,7 @@ happyError toks =
     (if null toks
        then EOF
        else posn)
-    ParseError'
+    ParseError
     (hsep ["Parsing", "error", "at", pretty txt <> "."])
   where
     (txt, posn) =

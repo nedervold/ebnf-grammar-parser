@@ -44,7 +44,7 @@ scanError (AlexPn o l c) txt =
   throwErrors $
   Error
     (Posn o l c)
-    ScanError'
+    ScanError
     (hsep ["Scan", "error", "at", "character", pretty (show $ head txt) <> "."])
 
 scan :: String -> Either Errors [Token]

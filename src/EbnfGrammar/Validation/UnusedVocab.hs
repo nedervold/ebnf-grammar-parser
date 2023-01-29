@@ -23,7 +23,7 @@ checkUnusedVocab g@(Gram ps) =
     else throwError $
          Errors $
          S.fromList
-           [ Error posn UnreachableError' $
+           [ Error posn UnreachableError $
            hsep ["The", "nonterminal", pretty $ show str, "is", "unreachable."]
            | (posn, str) <- locatedUnreachables
            ]

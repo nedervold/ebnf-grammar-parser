@@ -23,7 +23,7 @@ checkUndefinedNonterminals g@(Gram ps) =
          S.fromList
            [ Error
              (_tokenDeco tok)
-             UndefinedNonterminalError'
+             UndefinedNonterminalError
              (hsep ["Nonterminal", pretty $ show nm, "is", "undefined."])
            | NT tok <- universeBi g
            , let nm = _tokenText tok

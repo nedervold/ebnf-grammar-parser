@@ -22,7 +22,7 @@ checkUniqueHeads g@(Gram ps) =
     else throwError $
          Errors $
          S.fromList
-           [ Error posn DuplicateHeadError' msg
+           [ Error posn DuplicateHeadError msg
            | (hd, posns) <- multiples
            , (posn, posns') <- chooseOne posns
            , let msg =

@@ -30,14 +30,14 @@ instance Pretty Errors where
   pretty errs = vcat $ map pretty $ S.toList $ unErrors errs
 
 data ErrorType
-  = ScanError'
-  | ParseError'
-  | DuplicateHeadError'
-  | DuplicateConstructorError'
-  | UndefinedNonterminalError'
-  | UnproductiveError'
-  | UnreachableError'
-  | AmbiguousNullableError'
+  = ScanError
+  | ParseError
+  | DuplicateHeadError
+  | DuplicateConstructorError
+  | UndefinedNonterminalError
+  | UnproductiveError
+  | UnreachableError
+  | AmbiguousNullableError
   deriving (Eq, Ord, Show)
 
 data Error =
