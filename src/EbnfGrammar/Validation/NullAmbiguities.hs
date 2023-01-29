@@ -12,6 +12,7 @@ import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Posn
 import EbnfGrammar.Syntax
+import EbnfGrammar.Token
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
 import Prettyprinter
 import SafeMap
@@ -42,6 +43,9 @@ checkNullAmbiguities g =
         , "ambiguous:"
         , pretty t <> "."
         ]
+    -- This is slightly off: it's the Posn of the first element of the
+    -- term not the punctuation, but we don't keep that location info.
+    -- Close enough.
     termPosn :: Term -> Posn
     termPosn t =
       case t of
@@ -57,20 +61,17 @@ checkNullAmbiguities g =
     ambiguousTerms = filter isAmbiguous $ universeBi g
     nullableNTs :: S.Set String
     nullableNTs = S.fromList [str | (str, True) <- M.toList $ nullables g]
+    tokIsAmbig :: Token -> Bool
+    tokIsAmbig tok = _tokenText tok `S.member` nullableNTs
     isAmbiguous :: Term -> Bool
-    isAmbiguous (Opt b) =
-      case b of
-        NT tok -> _tokenText tok `S.member` nullableNTs
-        T _ -> False
-    isAmbiguous (Rep0 b) =
-      case b of
-        NT tok -> _tokenText tok `S.member` nullableNTs
-        T _ -> False
-    isAmbiguous (Repsep0 b _) =
-      case b of
-        NT tok -> _tokenText tok `S.member` nullableNTs
-        T _ -> False
-    isAmbiguous _ = False
+    isAmbiguous t =
+      case t of
+        Opt (NT tok) -> tokIsAmbig tok
+        Rep0 (NT tok) -> tokIsAmbig tok
+        Rep1 (NT tok) -> tokIsAmbig tok
+        Repsep0 (NT tok) _ -> tokIsAmbig tok
+        Repsep1 (NT tok) (NT tok') -> tokIsAmbig tok && tokIsAmbig tok'
+        _ -> False
 
 nullables :: Gram -> M.Map String Bool
 nullables (Gram ps) = monotoneMapFixedPoint f initMap

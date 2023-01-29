@@ -1,8 +1,10 @@
 gram ::= gram : { prod }+.
 
-prod ::= prod : LOWER_NAME YIELDS { alt ... OR }+.
+# prod ::= prod : LOWER_NAME YIELDS { alt ... OR }+.
+prod ::= prod : LOWER_NAME YIELDS { alt }+.
 
-alt ::= alt : [ LOWER_NAME ] COLON { term } FULL_STOP.
+alt ::= alt : [ LOWER_NAME ] { term } .
+# alt ::= alt : [ LOWER_NAME ] COLON { term } FULL_STOP.
 
 
 
