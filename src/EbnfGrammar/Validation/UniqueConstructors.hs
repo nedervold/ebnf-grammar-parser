@@ -13,7 +13,6 @@ import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
 import EbnfGrammar.Utils (chooseOne, collectOnFirst)
 import Prettyprinter
-import Text.Printf (printf)
 import Text.StdToken
 
 checkUniqueConstructors :: Gram -> Either Errors Gram
@@ -27,10 +26,14 @@ checkUniqueConstructors g@(Gram ps) =
            | (ctor, posns) <- multiples
            , (posn, posns') <- chooseOne posns
            , let msg =
-                   printf
-                     "%s also defined at %s."
-                     (show ctor)
-                     (show (sep $ punctuate "," $ map pretty posns') :: String)
+                   hsep
+                     [ "Constructor"
+                     , pretty $ show ctor
+                     , "also"
+                     , "defined"
+                     , "at"
+                     , sep (punctuate "," $ map pretty posns') <> "."
+                     ]
            ]
   where
     multiples :: [(String, [Posn])]

@@ -13,7 +13,6 @@ import EbnfGrammar.Posn
 import EbnfGrammar.Syntax
 import EbnfGrammar.Utils
 import Prettyprinter
-import Text.Printf
 import Text.StdToken
 
 checkUniqueHeads :: Gram -> Either Errors Gram
@@ -26,13 +25,14 @@ checkUniqueHeads g@(Gram ps) =
            [ Error posn DuplicateHeadError' msg
            | (hd, posns) <- multiples
            , (posn, posns') <- chooseOne posns
-        -- TODO Mixing printf and prettyprinting is wrong.
-        -- I should be using Docs instead of Strings in Error.
            , let msg =
-                   printf
-                     "%s also defined at %s."
-                     (show hd)
-                     (show (sep $ punctuate "," $ map pretty posns') :: String)
+                   hsep
+                     [ pretty $ show hd
+                     , "also"
+                     , "defined"
+                     , "at"
+                     , sep (punctuate "," $ map pretty posns') <> "."
+                     ]
            ]
   where
     multiples :: [(String, [Posn])]

@@ -28,7 +28,7 @@ validateGrammar :: Gram -> Either Errors Gram
 validateGrammar =
   (\gram -> merge [checkUniqueHeads gram, checkUniqueConstructors gram]) >=>
   (\gram -> merge [checkUnusedVocab gram, checkUndefinedNonterminals gram]) >=>
-  (\gram -> merge [f checkProductivity gram, f checkNullAmbiguities gram])
+  (\gram -> merge [checkProductivity gram, f checkNullAmbiguities gram])
   where
     f :: (Gram -> Either Error Gram) -> Gram -> Either Errors Gram
     f g gr = first (Errors . S.singleton) $ g gr

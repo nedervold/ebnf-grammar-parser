@@ -1,4 +1,5 @@
 {
+{-# LANGUAGE OverloadedStrings #-}
 module EbnfGrammar.Parser
   ( parseGrammar
   , parseGrammarFromString
@@ -13,6 +14,7 @@ import EbnfGrammar.Posn (Posn(..))
 import EbnfGrammar.Scanner (scan)
 import EbnfGrammar.Syntax
 import EbnfGrammar.Token (Token, TokenType(..))
+import Prettyprinter
 import Text.StdToken (StdToken(..))
 }
 
@@ -90,7 +92,7 @@ happyError toks =
        then EOF
        else posn)
     ParseError'
-    ("parsing error at " ++ txt)
+    (hsep ["Parsing", "error", "at", pretty txt <> "."])
   where
     (txt, posn) =
       if null toks

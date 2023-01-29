@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module EbnfGrammar.Validation.UndefinedNonterminals
   ( checkUndefinedNonterminals
   ) where
@@ -9,7 +11,7 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Syntax
-import Text.Printf (printf)
+import Prettyprinter
 import Text.StdToken
 
 checkUndefinedNonterminals :: Gram -> Either Errors Gram
@@ -24,7 +26,7 @@ checkUndefinedNonterminals g@(Gram ps)
            [ Error
              (_tokenDeco tok)
              UndefinedNonterminalError'
-             (printf "Nonterminal %s is undefined." (show nm))
+             (hsep ["Nonterminal", pretty $ show nm, "is", "undefined."])
            | NT tok <- universeBi g
            , let nm = _tokenText tok
            , nm `S.member` undefinedNonterminals

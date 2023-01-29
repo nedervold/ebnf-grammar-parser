@@ -4,7 +4,6 @@ prod ::= prod : LOWER_NAME YIELDS { alt ... OR }+.
 
 alt ::= alt : [ LOWER_NAME ] COLON { term } FULL_STOP.
 
-foo ::= : bar. foo ::= : bar.
 
 
 term ::= vocab_term : vocab
@@ -14,5 +13,7 @@ term ::= vocab_term : vocab
     | repsep0 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE
     | repsep1 : LEFT_BRACE vocab ELLIPSIS vocab RIGHT_BRACE_PLUS.
 
-vocab ::= nonterm : LOWER_NAME
-    | term : UPPER_NAME.
+vocab ::= nonterm : LOWER_NAME 
+    | term : UPPER_NAME .
+
+

@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RecordWildCards #-}
@@ -45,22 +46,26 @@ data Error
   = Error
       { errorPosn :: Posn
       , errorType :: ErrorType
-      , errorText :: String
+      , errorText :: forall ann. Doc ann
       }
   | OldError OldError
-  deriving (Eq, Ord, Show)
+
+instance Eq Error where
+  e == e' = (errorPosn e, errorType e) == (errorPosn e', errorType e')
+
+instance Ord Error where
+  compare e e' = compare (errorPosn e, errorType e) (errorPosn e', errorType e')
 
 instance Pretty Error where
   pretty Error {..} =
     vsep
       [ hsep [pretty errorPosn, pretty (show errorType ++ ":")]
-      , indent 4 $ pretty errorText
+      , indent 2 errorText
       ]
   pretty (OldError oe) = pretty oe
 
-data OldError
-  = UnproductiveError (S.Set PA)
-  | NullAmbiguitiesError [Term]
+newtype OldError =
+  NullAmbiguitiesError [Term]
   deriving (Show)
 
 instance Eq OldError where
@@ -71,7 +76,5 @@ instance Ord OldError where
 
 -- TODO /Much/ more to do.
 instance Pretty OldError where
-  pretty (UnproductiveError pas) =
-    vsep ["UnproductiveError:", nest 4 (vcat $ map pretty $ S.toList pas)]
   pretty (NullAmbiguitiesError _) = "NullAmbiguitiesError"
   -- pretty oe = error $ show oe

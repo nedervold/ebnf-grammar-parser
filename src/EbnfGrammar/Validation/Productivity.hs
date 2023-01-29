@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -15,6 +16,7 @@ import EbnfGrammar.Error
 import EbnfGrammar.Posn
 import EbnfGrammar.Syntax
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
+import Prettyprinter
 import SafeMap
 import Text.StdToken
 
@@ -27,12 +29,31 @@ initMap (Gram ps) = M.fromSet f $ S.fromList $ concatMap getPAs $ NE.toList ps
     f (P (Prod hd _)) = (_tokenDeco hd, False)
     f (A (Alt ctor _)) = (_tokenDeco ctor, False)
 
-checkProductivity :: Gram -> Either Error Gram
+checkProductivity :: Gram -> Either Errors Gram
 checkProductivity gram =
   if S.null unproductives
     then pure gram
-    else throwError $ OldError $ UnproductiveError unproductives
+    else throwError $
+         Errors $
+         S.fromList
+           [ Error posn UnproductiveError' msg
+           | pa <- S.toList unproductives
+           , let posn = posnMap M.! pa
+           , let msg = mkMsg pa
+           ]
   where
+    mkMsg (P (Prod hd _)) =
+      hsep ["Production", pretty $ show $ _tokenText hd, "is", "unproductive."]
+    mkMsg (A (Alt ctor _)) =
+      hsep
+        [ "Alternative"
+        , "with"
+        , "constructor"
+        , pretty $ show $ _tokenText ctor
+        , "is"
+        , "unproductive."
+        ]
+    posnMap = fmap fst iMap
     unproductives :: S.Set PA
     unproductives = S.fromList [pa | (pa, False) <- M.toList productiveMap]
     iMap = initMap gram

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module EbnfGrammar.Validation.UnusedVocab
   ( checkUnusedVocab
   ) where
@@ -10,7 +12,7 @@ import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Posn
 import EbnfGrammar.Syntax
-import Text.Printf
+import Prettyprinter
 import Text.StdToken
 
 checkUnusedVocab :: Gram -> Either Errors Gram
@@ -22,7 +24,7 @@ checkUnusedVocab g@(Gram ps) =
          Errors $
          S.fromList
            [ Error posn UnreachableError' $
-           printf "The nonterminal %s is unreachable." (show str)
+           hsep ["The", "nonterminal", pretty $ show str, "is", "unreachable."]
            | (posn, str) <- locatedUnreachables
            ]
   where

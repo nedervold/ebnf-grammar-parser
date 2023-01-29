@@ -1,5 +1,6 @@
 {
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
 module EbnfGrammar.Scanner
@@ -9,7 +10,7 @@ module EbnfGrammar.Scanner
 import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwErrors)
 import EbnfGrammar.Posn (Posn(..))
 import EbnfGrammar.Token (Token, TokenType(..))
-import Text.Printf (printf)
+import Prettyprinter
 import Text.StdToken (StdToken(..))
 }
 
@@ -44,7 +45,7 @@ scanError (AlexPn o l c) txt =
   Error
     (Posn o l c)
     ScanError'
-    (printf "scan error at char %s" $ show $ head txt)
+    (hsep ["Scan", "error", "at", "character", pretty (show $ head txt) <> "."])
 
 scan :: String -> Either Errors [Token]
 scan = sequenceA . alexScanTokens
