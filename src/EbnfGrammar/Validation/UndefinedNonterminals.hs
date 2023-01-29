@@ -15,9 +15,7 @@ import Prettyprinter
 import Text.StdToken
 
 checkUndefinedNonterminals :: Gram -> Either Errors Gram
-checkUndefinedNonterminals g@(Gram ps)
-  -- TODO I should be recording positions too
- =
+checkUndefinedNonterminals g@(Gram ps) =
   if S.null undefinedNonterminals
     then pure g
     else throwError $

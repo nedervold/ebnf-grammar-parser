@@ -10,7 +10,7 @@ module EbnfGrammar.Scanner
 import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwErrors)
 import EbnfGrammar.Posn (Posn(..))
 import EbnfGrammar.Token (Token, TokenType(..))
-import Prettyprinter
+import Prettyprinter hiding (column, line)
 import Text.StdToken (StdToken(..))
 }
 

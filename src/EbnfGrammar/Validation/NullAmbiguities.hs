@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module EbnfGrammar.Validation.NullAmbiguities
   ( checkNullAmbiguities
   ) where
@@ -8,18 +10,49 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
 import qualified Data.Set as S
 import EbnfGrammar.Error
+import EbnfGrammar.Posn
 import EbnfGrammar.Syntax
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
+import Prettyprinter
 import SafeMap
 import Text.StdToken
 
-checkNullAmbiguities :: Gram -> Either Error Gram
--- figure nullables, check in all the extensions
+checkNullAmbiguities :: Gram -> Either Errors Gram
 checkNullAmbiguities g =
   if null ambiguousTerms
     then pure g
-    else throwError $ OldError $ NullAmbiguitiesError ambiguousTerms
+    else throwError $
+         Errors $
+         S.fromList
+           [ Error posn AmbiguousNullableError' msg
+           | term <- ambiguousTerms
+           , let posn = termPosn term
+           , let msg = termMsg term
+           ]
   where
+    termMsg :: Term -> Doc ann
+    termMsg t =
+      hsep
+        [ "This"
+        , "term"
+        , "with"
+        , "nullable"
+        , "contents"
+        , "is"
+        , "ambiguous:"
+        , pretty t <> "."
+        ]
+    termPosn :: Term -> Posn
+    termPosn t =
+      case t of
+        VocabTerm v -> vocabPosn v
+        Opt v -> vocabPosn v
+        Rep0 v -> vocabPosn v
+        Rep1 v -> vocabPosn v
+        Repsep0 v _ -> vocabPosn v
+        Repsep1 v _ -> vocabPosn v
+    vocabPosn (NT tok) = _tokenDeco tok
+    vocabPosn (T tok) = _tokenDeco tok
     ambiguousTerms :: [Term]
     ambiguousTerms = filter isAmbiguous $ universeBi g
     nullableNTs :: S.Set String

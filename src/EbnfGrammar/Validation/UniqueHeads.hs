@@ -27,7 +27,9 @@ checkUniqueHeads g@(Gram ps) =
            , (posn, posns') <- chooseOne posns
            , let msg =
                    hsep
-                     [ pretty $ show hd
+                     [ "Nonterminal"
+                     , pretty $ show hd
+                     , "is"
                      , "also"
                      , "defined"
                      , "at"

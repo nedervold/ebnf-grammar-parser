@@ -8,10 +8,8 @@ module EbnfGrammar.Validation
   ) where
 
 import Control.Monad ((>=>))
-import Data.Bifunctor
-import qualified Data.Set as S
 import Data.Validation
-import EbnfGrammar.Error (Error, Errors(..))
+import EbnfGrammar.Error (Errors(..))
 import qualified EbnfGrammar.Parser as P
 import EbnfGrammar.Syntax (Gram)
 import EbnfGrammar.Token (Token)
@@ -28,10 +26,8 @@ validateGrammar :: Gram -> Either Errors Gram
 validateGrammar =
   (\gram -> merge [checkUniqueHeads gram, checkUniqueConstructors gram]) >=>
   (\gram -> merge [checkUnusedVocab gram, checkUndefinedNonterminals gram]) >=>
-  (\gram -> merge [checkProductivity gram, f checkNullAmbiguities gram])
+  (\gram -> merge [checkProductivity gram, checkNullAmbiguities gram])
   where
-    f :: (Gram -> Either Error Gram) -> Gram -> Either Errors Gram
-    f g gr = first (Errors . S.singleton) $ g gr
     merge :: [Either Errors Gram] -> Either Errors Gram
     merge = toEither . fmap head . traverse fromEither
 
