@@ -9,16 +9,26 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import EbnfGrammar.Error
 import EbnfGrammar.Syntax
+import Text.Printf (printf)
 import Text.StdToken
 
-checkUndefinedNonterminals :: Gram -> Either Error Gram
+checkUndefinedNonterminals :: Gram -> Either Errors Gram
 checkUndefinedNonterminals g@(Gram ps)
   -- TODO I should be recording positions too
  =
   if S.null undefinedNonterminals
     then pure g
     else throwError $
-         OldError $ UndefinedNonterminalsError undefinedNonterminals
+         Errors $
+         S.fromList
+           [ Error
+             (_tokenDeco tok)
+             UndefinedNonterminalError'
+             (printf "Nonterminal %s is undefined." (show nm))
+           | NT tok <- universeBi g
+           , let nm = _tokenText tok
+           , nm `S.member` undefinedNonterminals
+           ]
   where
     defined :: [String]
     altss :: [[Alt]]

@@ -59,10 +59,7 @@ instance Pretty Error where
   pretty (OldError oe) = pretty oe
 
 data OldError
-  = NonUniqueConstructorsError [(String, [Posn])]
-  | UndefinedNonterminalsError (S.Set String)
-  | UnproductiveError (S.Set PA)
-  | UnreachableError [(Posn, String)]
+  = UnproductiveError (S.Set PA)
   | NullAmbiguitiesError [Term]
   deriving (Show)
 
@@ -74,10 +71,7 @@ instance Ord OldError where
 
 -- TODO /Much/ more to do.
 instance Pretty OldError where
-  pretty NonUniqueConstructorsError {} = "NonUniqueConstructorsError"
-  pretty UndefinedNonterminalsError {} = "UndefinedNonterminalsError"
   pretty (UnproductiveError pas) =
     vsep ["UnproductiveError:", nest 4 (vcat $ map pretty $ S.toList pas)]
   pretty (NullAmbiguitiesError _) = "NullAmbiguitiesError"
-  pretty (UnreachableError _) = "UnreachableError"
   -- pretty oe = error $ show oe

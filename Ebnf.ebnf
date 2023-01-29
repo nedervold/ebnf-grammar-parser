@@ -4,7 +4,8 @@ prod ::= prod : LOWER_NAME YIELDS { alt ... OR }+.
 
 alt ::= alt : [ LOWER_NAME ] COLON { term } FULL_STOP.
 
-foo ::= : bar.
+foo ::= : bar. foo ::= : bar.
+
 
 term ::= vocab_term : vocab
     | opt : LEFT_BRACKET vocab RIGHT_BRACKET

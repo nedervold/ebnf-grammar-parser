@@ -26,8 +26,8 @@ import EbnfGrammar.Validation.UnusedVocab (checkUnusedVocab)
 -- These checks could be done in parallel.  Could collect them up by position.
 validateGrammar :: Gram -> Either Errors Gram
 validateGrammar =
-  (\gram -> merge [checkUniqueHeads gram, f checkUniqueConstructors gram]) >=>
-  (\gram -> merge [checkUnusedVocab gram, f checkUndefinedNonterminals gram]) >=>
+  (\gram -> merge [checkUniqueHeads gram, checkUniqueConstructors gram]) >=>
+  (\gram -> merge [checkUnusedVocab gram, checkUndefinedNonterminals gram]) >=>
   (\gram -> merge [f checkProductivity gram, f checkNullAmbiguities gram])
   where
     f :: (Gram -> Either Error Gram) -> Gram -> Either Errors Gram
