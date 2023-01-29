@@ -1,9 +1,11 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module EbnfGrammar.Validation.UniqueConstructors
   ( checkUniqueConstructors
   ) where
 
+import Control.Monad.Except (MonadError)
 import Data.List (sort)
 import qualified Data.List.NonEmpty as NE
 import EbnfGrammar.Error
@@ -11,9 +13,9 @@ import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
 import EbnfGrammar.Utils (chooseOne, collectOnFirst)
 import Prettyprinter
-import Text.StdToken
+import Text.StdToken -- TODO Make this unnecessary.
 
-checkUniqueConstructors :: Gram -> Either Errors Gram
+checkUniqueConstructors :: MonadError Errors m => Gram -> m Gram
 checkUniqueConstructors g@(Gram ps) =
   if null multiples
     then pure g

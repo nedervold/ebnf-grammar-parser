@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module EbnfGrammar.Validation.UnusedVocab
@@ -6,6 +7,7 @@ module EbnfGrammar.Validation.UnusedVocab
 
 import Algebra.Graph.AdjacencyMap
 import Algebra.Graph.AdjacencyMap.Algorithm
+import Control.Monad.Except (MonadError)
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import EbnfGrammar.Error
@@ -14,7 +16,7 @@ import EbnfGrammar.Syntax
 import Prettyprinter
 import Text.StdToken
 
-checkUnusedVocab :: Gram -> Either Errors Gram
+checkUnusedVocab :: MonadError Errors m => Gram -> m Gram
 -- make a graph and check reachable from the root
 checkUnusedVocab g@(Gram ps) =
   if S.null unreachables

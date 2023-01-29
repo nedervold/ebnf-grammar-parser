@@ -8,6 +8,7 @@ module EbnfGrammar.Validation.Productivity
   ( checkProductivity
   ) where
 
+import Control.Monad.Except (MonadError)
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -28,7 +29,7 @@ initMap (Gram ps) = M.fromSet f $ S.fromList $ concatMap getPAs $ NE.toList ps
     f (P (Prod hd _)) = (_tokenDeco hd, False)
     f (A (Alt ctor _)) = (_tokenDeco ctor, False)
 
-checkProductivity :: Gram -> Either Errors Gram
+checkProductivity :: MonadError Errors m => Gram -> m Gram
 checkProductivity gram =
   if S.null unproductives
     then pure gram

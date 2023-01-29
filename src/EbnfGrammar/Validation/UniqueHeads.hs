@@ -1,9 +1,11 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module EbnfGrammar.Validation.UniqueHeads
   ( checkUniqueHeads
   ) where
 
+import Control.Monad.Except (MonadError)
 import Data.List (sort)
 import qualified Data.List.NonEmpty as NE
 import EbnfGrammar.Error
@@ -13,7 +15,7 @@ import EbnfGrammar.Utils
 import Prettyprinter
 import Text.StdToken
 
-checkUniqueHeads :: Gram -> Either Errors Gram
+checkUniqueHeads :: MonadError Errors m => Gram -> m Gram
 checkUniqueHeads g@(Gram ps) =
   if null multiples
     then pure g

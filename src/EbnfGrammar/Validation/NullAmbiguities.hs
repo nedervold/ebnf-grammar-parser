@@ -1,9 +1,11 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module EbnfGrammar.Validation.NullAmbiguities
   ( checkNullAmbiguities
   ) where
 
+import Control.Monad.Except (MonadError)
 import Data.Generics.Uniplate.Operations
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
@@ -17,7 +19,7 @@ import Prettyprinter
 import SafeMap
 import Text.StdToken
 
-checkNullAmbiguities :: Gram -> Either Errors Gram
+checkNullAmbiguities :: MonadError Errors m => Gram -> m Gram
 checkNullAmbiguities g =
   if null ambiguousTerms
     then pure g

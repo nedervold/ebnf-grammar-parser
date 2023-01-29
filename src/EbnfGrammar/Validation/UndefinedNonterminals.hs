@@ -1,9 +1,11 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module EbnfGrammar.Validation.UndefinedNonterminals
   ( checkUndefinedNonterminals
   ) where
 
+import Control.Monad.Except (MonadError)
 import Data.Generics.Uniplate.Data ()
 import Data.Generics.Uniplate.Operations
 import qualified Data.List.NonEmpty as NE
@@ -13,7 +15,7 @@ import EbnfGrammar.Syntax
 import Prettyprinter
 import Text.StdToken
 
-checkUndefinedNonterminals :: Gram -> Either Errors Gram
+checkUndefinedNonterminals :: MonadError Errors m => Gram -> m Gram
 checkUndefinedNonterminals g@(Gram ps) =
   if S.null undefinedNonterminals
     then pure g
