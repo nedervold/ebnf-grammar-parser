@@ -13,12 +13,17 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
 import qualified Data.Set as S
 import EbnfGrammar.Error
-import EbnfGrammar.Posn
+  ( Error(..)
+  , ErrorType(UnproductiveError)
+  , Errors
+  , throwErrorList
+  )
+import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
+import EbnfGrammar.Token (StdToken(..))
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
 import Prettyprinter
 import SafeMap
-import Text.StdToken
 
 initMap :: Gram -> M.Map PA (Posn, Bool)
 initMap (Gram ps) = M.fromSet f $ S.fromList $ concatMap getPAs $ NE.toList ps

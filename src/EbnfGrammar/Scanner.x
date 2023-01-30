@@ -9,13 +9,12 @@ module EbnfGrammar.Scanner
 
 import Control.Monad.Except(throwError)
 import Control.Monad.Reader(ReaderT, runReaderT, ask)
-import Data.Bifunctor(first)
 import EbnfGrammar.Error (Error(..), ErrorType(..), Errors(..))
 import qualified Data.Set as S
 import EbnfGrammar.Posn (Posn(..))
-import EbnfGrammar.Token (Token, TokenType(..))
+import EbnfGrammar.Token (Token, TokenType(..), StdToken(Token))
 import Prettyprinter hiding (column, line)
-import Text.StdToken (StdToken(..))
+import EbnfGrammar.Token(Token(..))
 }
 
 %wrapper "posn"

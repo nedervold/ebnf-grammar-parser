@@ -2,12 +2,16 @@
 
 module EbnfGrammar.Token
   ( Token
+  , StdToken(..)
   , TokenType(..)
+  , tokenDeco
+  , tokenText
+  , tokenType
   ) where
 
 import Data.Data (Data)
 import EbnfGrammar.Posn (Posn(..))
-import Text.StdToken (StdToken(..))
+import Text.StdToken (StdToken(..), tokenDeco, tokenText, tokenType)
 
 data TokenType
   = COLON

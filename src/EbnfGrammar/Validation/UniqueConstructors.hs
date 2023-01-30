@@ -9,11 +9,16 @@ import Control.Monad.Except (MonadError)
 import Data.List (sort)
 import qualified Data.List.NonEmpty as NE
 import EbnfGrammar.Error
+  ( Error(..)
+  , ErrorType(DuplicateConstructorError)
+  , Errors
+  , throwErrorList
+  )
 import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
+import EbnfGrammar.Token (StdToken(..))
 import EbnfGrammar.Utils (chooseOne, collectOnFirst)
 import Prettyprinter
-import Text.StdToken -- TODO Make this unnecessary.
 
 checkUniqueConstructors :: MonadError Errors m => Gram -> m Gram
 checkUniqueConstructors g@(Gram ps) =

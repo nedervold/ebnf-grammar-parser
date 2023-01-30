@@ -7,13 +7,18 @@ module EbnfGrammar.Validation.UndefinedNonterminals
 
 import Control.Monad.Except (MonadError)
 import Data.Generics.Uniplate.Data ()
-import Data.Generics.Uniplate.Operations
+import Data.Generics.Uniplate.Operations (universeBi)
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import EbnfGrammar.Error
+  ( Error(..)
+  , ErrorType(UndefinedNonterminalError)
+  , Errors
+  , throwErrorList
+  )
 import EbnfGrammar.Syntax
+import EbnfGrammar.Token (StdToken(..))
 import Prettyprinter
-import Text.StdToken
 
 checkUndefinedNonterminals :: MonadError Errors m => Gram -> m Gram
 checkUndefinedNonterminals g@(Gram ps) =

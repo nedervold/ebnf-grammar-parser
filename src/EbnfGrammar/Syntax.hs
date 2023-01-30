@@ -14,9 +14,8 @@ import Data.Data (Data)
 import Data.Function (on)
 import Data.Generics.Uniplate.Data ()
 import Data.Ord (comparing)
-import EbnfGrammar.Token (Token)
+import EbnfGrammar.Token (StdToken(..), Token)
 import Language.Ebnf.Extensions.Syntax (Rep1)
-import Text.StdToken (_tokenText)
 
 {- Note that this is abstract syntax, not concrete. -}
 newtype Gram =

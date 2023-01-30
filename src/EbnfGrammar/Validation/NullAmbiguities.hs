@@ -16,8 +16,7 @@ import EbnfGrammar.Syntax
 import EbnfGrammar.Token
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
 import Prettyprinter
-import SafeMap
-import Text.StdToken
+import SafeMap -- TODO Remove this
 
 checkNullAmbiguities :: MonadError Errors m => Gram -> m Gram
 checkNullAmbiguities g =
@@ -40,7 +39,7 @@ checkNullAmbiguities g =
         , "contents"
         , "is"
         , "ambiguous:"
-        , pretty t <> "."
+        , pretty (show $ show $ pretty t) <> "."
         ]
     -- This is slightly off: it's the Posn of the first element of the
     -- term not the punctuation, but we don't keep that location info.

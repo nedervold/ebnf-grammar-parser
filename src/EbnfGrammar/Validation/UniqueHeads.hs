@@ -9,11 +9,16 @@ import Control.Monad.Except (MonadError)
 import Data.List (sort)
 import qualified Data.List.NonEmpty as NE
 import EbnfGrammar.Error
-import EbnfGrammar.Posn
+  ( Error(..)
+  , ErrorType(DuplicateHeadError)
+  , Errors
+  , throwErrorList
+  )
+import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
-import EbnfGrammar.Utils
+import EbnfGrammar.Token (StdToken(..))
+import EbnfGrammar.Utils (chooseOne, collectOnFirst)
 import Prettyprinter
-import Text.StdToken
 
 checkUniqueHeads :: MonadError Errors m => Gram -> m Gram
 checkUniqueHeads g@(Gram ps) =

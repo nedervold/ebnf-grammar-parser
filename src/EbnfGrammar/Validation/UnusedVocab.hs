@@ -5,16 +5,21 @@ module EbnfGrammar.Validation.UnusedVocab
   ( checkUnusedVocab
   ) where
 
-import Algebra.Graph.AdjacencyMap
-import Algebra.Graph.AdjacencyMap.Algorithm
+import Algebra.Graph.AdjacencyMap (edges, vertexSet)
+import Algebra.Graph.AdjacencyMap.Algorithm (reachable)
 import Control.Monad.Except (MonadError)
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Set as S
 import EbnfGrammar.Error
-import EbnfGrammar.Posn
+  ( Error(..)
+  , ErrorType(UnreachableError)
+  , Errors
+  , throwErrorList
+  )
+import EbnfGrammar.Posn (Posn)
 import EbnfGrammar.Syntax
+import EbnfGrammar.Token (StdToken(..))
 import Prettyprinter
-import Text.StdToken
 
 checkUnusedVocab :: MonadError Errors m => Gram -> m Gram
 -- make a graph and check reachable from the root
