@@ -7,14 +7,13 @@ module EbnfGrammar.Scanner
   ( scan
   ) where
 
-import Control.Monad.Except(throwError)
-import Control.Monad.Reader(ReaderT, runReaderT, ask)
-import EbnfGrammar.Error (Error(..), ErrorType(..), Errors(..))
+import Control.Monad.Except (throwError)
+import Control.Monad.Reader (ReaderT, ask, runReaderT)
 import qualified Data.Set as S
+import EbnfGrammar.Error (Error(..), ErrorType(..), Errors(..))
 import EbnfGrammar.Posn (Posn(..))
-import EbnfGrammar.Token (Token, TokenType(..), StdToken(Token))
+import EbnfGrammar.Token (StdToken(Token), Token, TokenType(..))
 import Prettyprinter hiding (column, line)
-import EbnfGrammar.Token(Token(..))
 }
 
 %wrapper "posn"

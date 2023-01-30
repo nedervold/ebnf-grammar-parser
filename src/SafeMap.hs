@@ -1,4 +1,6 @@
-module SafeMap where
+module SafeMap
+  ( (!)
+  ) where
 
 import qualified Data.Map as M
 import GHC.Stack

@@ -42,7 +42,7 @@ packages:
 #
 extra-deps:
 - git: https://github.com/nedervold/std-token.git
-  commit: 51fa65df63fc8aa4d753b86c11e82db9c5718ac1
+  commit: 3b2d4ea3dbaae038ee2f8bae9a9118b4ddcce031
 - git: https://github.com/nedervold/ebnf-extensions.git
   commit: 40c9af17403e0c5a55d707eac44738581a896303
 

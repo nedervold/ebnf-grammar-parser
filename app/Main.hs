@@ -22,7 +22,7 @@ main = do
   case eGram of
     Left err -> do
       print $ pretty err
-      error "failed"
+      exitFailure
     Right gram -> print $ pretty gram
 
 usage :: IO a
