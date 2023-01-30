@@ -30,20 +30,11 @@ validateGrammar =
 
 ------------------------------------------------------------
 parseGrammarFromString :: FilePath -> String -> Either Errors Gram
-parseGrammarFromString fp src = do
-  gram <- P.parseGrammarFromString fp src
-  validateGrammar gram
+parseGrammarFromString fp src =
+  P.parseGrammarFromString fp src >>= validateGrammar
 
 parseGrammarFromFile :: FilePath -> IO (Either Errors Gram)
-parseGrammarFromFile fp = do
-  eGram <- P.parseGrammarFromFile fp
-  pure $ do
-    gram <- eGram
-    validateGrammar gram
+parseGrammarFromFile fp = parseGrammarFromString fp <$> readFile fp
 
 parseGrammarFromStdin :: IO (Either Errors Gram)
-parseGrammarFromStdin = do
-  eGram <- P.parseGrammarFromStdin
-  pure $ do
-    gram <- eGram
-    validateGrammar gram
+parseGrammarFromStdin = parseGrammarFromString "<stdin>" <$> getContents

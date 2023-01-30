@@ -1,22 +1,33 @@
 {
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+
 module EbnfGrammar.Parser
   ( parseGrammarFromString
   , parseGrammarFromFile
   , parseGrammarFromStdin
   ) where
 
-import Control.Monad.Reader (Reader, asks, runReader, withReader)
-import Control.Monad.Except(throwError)
-import Data.Bifunctor
+import Control.Monad.Reader
+  ( Reader
+  , ReaderT
+  , ask
+  , asks
+  , runReader
+  , runReaderT
+  , withReader
+  )
 import qualified Data.List.NonEmpty as NE
-import qualified Data.Set as S
-import EbnfGrammar.Error (Error(..), ErrorType(..), Errors(..), throwSingleError)
+import EbnfGrammar.Error
+  ( Error(..)
+  , ErrorType(ParseError)
+  , Errors
+  , throwSingleError
+  )
 import EbnfGrammar.Posn (Posn(..))
-import EbnfGrammar.Scanner (scan')
+import EbnfGrammar.Scanner (scan)
 import EbnfGrammar.Syntax
-import EbnfGrammar.Token (Token, TokenType(..))
+import EbnfGrammar.Token (Token(..), TokenType(..))
 import Prettyprinter
 import Text.StdToken (StdToken(..))
 }
@@ -35,7 +46,7 @@ import Text.StdToken (StdToken(..))
     UPPER_NAME  { $$@(Token UPPER_NAME  _ _) }
     YIELDS { $$@(Token YIELDS _ _) }
 
-%monad { Either (FilePath -> Errors) }
+%monad { R }
 %name parseGrammar gram
 
 %%
@@ -80,6 +91,8 @@ vocab : LOWER_NAME { NT $1 }
     | UPPER_NAME { T $1 }
 
 {
+type R = ReaderT FilePath (Either Errors)
+
 type HdEnv = Token
 
 type HdColonEnv = (Token, Token)
@@ -87,30 +100,21 @@ type HdColonEnv = (Token, Token)
 addColon :: Token -> HdEnv -> HdColonEnv
 addColon c hd = (hd, c)
 
-happyError :: [Token] -> Either (FilePath -> Errors) a
-happyError toks =
-  throwError $ \fp ->  Errors $ S.singleton $  Error
-    (if null toks
-       then EOF
-       else posn)
-    ParseError
-    (hsep ["Parsing", "error", "at", pretty txt <> "."])
-  where
-    (txt, posn) =
-      if null toks
-        then ("EOF", EOF)
-        else case head toks of
-               Token _tt txt pos -> ("token " ++ show txt, pos)
+happyError :: [Token] -> R a
+happyError toks = do
+  fp <- ask
+  let (doc, posn) =
+        if null toks
+          then ("EOF", EOF fp)
+          else let Token _tt txt posn = head toks
+                in (hsep ["token", pretty txt], posn)
+  throwSingleError $ Error posn ParseError doc
 
-parseGrammar :: [Token] -> Either (FilePath -> Errors) Gram
+parseGrammar :: [Token] -> R Gram
 parseGrammarFromString :: FilePath -> String -> Either Errors Gram
-parseGrammarFromString fp src = 
-  first ($ fp) eGram
-  where
-   eGram :: Either (FilePath -> Errors) Gram
-   eGram = do
-       toks <- scan' src
-       parseGrammar toks
+parseGrammarFromString fp src = do
+  toks <- scan fp src
+  runReaderT (parseGrammar toks) fp
 
 parseGrammarFromFile :: FilePath -> IO (Either Errors Gram)
 parseGrammarFromFile fp = parseGrammarFromString fp <$> readFile fp

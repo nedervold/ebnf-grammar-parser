@@ -12,14 +12,22 @@ import Text.Printf (printf)
 
 data Posn
   = Posn
-      { charOffset :: !Int
-      , lineNumber :: !Int
-      , columnNumber :: !Int
+      { posnFilePath :: FilePath
+      , posnOffset :: !Int
+      , posnLine :: !Int
+      , posnColumn :: !Int
       }
   | EOF
+      { posnFilePath :: FilePath
+      }
   deriving (Data, Eq, Ord, Show)
 
 instance Pretty Posn where
-  pretty Posn {..} =
-    pretty (printf "<stdin>:%d:%d" lineNumber columnNumber :: String)
-  pretty EOF = "<stdin>:<eof>"
+  pretty posn =
+    prettyStr $
+    case posn of
+      Posn {..} -> printf "%s:%d:%d" posnFilePath posnLine posnColumn
+      EOF {..} -> printf "%s:<eof>" posnFilePath
+
+prettyStr :: String -> Doc ann
+prettyStr = pretty

@@ -4,10 +4,11 @@
 {-# LANGUAGE StandaloneDeriving #-}
 
 module EbnfGrammar.Scanner
-  ( scan, scan'
+  ( scan
   ) where
 
 import Control.Monad.Except(throwError)
+import Control.Monad.Reader(ReaderT, runReaderT, ask)
 import Data.Bifunctor(first)
 import EbnfGrammar.Error (Error(..), ErrorType(..), Errors(..))
 import qualified Data.Set as S
@@ -39,20 +40,21 @@ $white+  ;
 
 . { scanError }
 {
-mkToken :: TokenType -> AlexPosn -> String -> Either (FilePath -> Errors) Token
-mkToken tt (AlexPn o l c) txt = Right $ Token tt txt (Posn o l c)
+type R = ReaderT FilePath (Either Errors)
 
-scanError :: AlexPosn -> String -> Either (FilePath -> Errors) Token
-scanError (AlexPn o l c) txt =
-  throwError $ \ fp -> Errors $ S.singleton $
-  Error
-    (Posn o l c)
+mkToken :: TokenType -> AlexPosn -> String -> R Token
+mkToken tt (AlexPn o l c) txt = do
+    fp <- ask
+    pure $ Token tt txt (Posn fp o l c)
+
+scanError :: AlexPosn -> String -> R Token
+scanError (AlexPn o l c) txt = do
+  fp <- ask
+  throwError $ Errors $ S.singleton $   Error
+    (Posn fp o l c)
     ScanError
     (hsep ["Scan", "error", "at", "character", pretty (show $ head txt) <> "."])
 
-scan' :: String -> Either (FilePath -> Errors) [Token]
-scan' = sequenceA . alexScanTokens
-
 scan :: FilePath -> String -> Either Errors [Token]
-scan fp src = first ($ fp) $ scan' src
+scan fp src = runReaderT (sequenceA $ alexScanTokens src) fp
 }
