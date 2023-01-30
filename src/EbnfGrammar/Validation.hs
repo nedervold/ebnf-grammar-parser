@@ -1,18 +1,16 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module EbnfGrammar.Validation
-  ( parseGrammar
-  , parseGrammarFromString
+  ( parseGrammarFromString
   , parseGrammarFromFile
   , parseGrammarFromStdin
   ) where
 
 import Control.Monad ((>=>))
-import Data.Validation
+import Data.Validation (fromEither, toEither)
 import EbnfGrammar.Error (Errors(..))
 import qualified EbnfGrammar.Parser as P
 import EbnfGrammar.Syntax (Gram)
-import EbnfGrammar.Token (Token)
 import EbnfGrammar.Validation.NullAmbiguities (checkNullAmbiguities)
 import EbnfGrammar.Validation.Productivity (checkProductivity)
 import EbnfGrammar.Validation.UndefinedNonterminals (checkUndefinedNonterminals)
@@ -21,7 +19,6 @@ import EbnfGrammar.Validation.UniqueHeads (checkUniqueHeads)
 import EbnfGrammar.Validation.UnusedVocab (checkUnusedVocab)
 
 ------------------------------------------------------------
--- These checks could be done in parallel.  Could collect them up by position.
 validateGrammar :: Gram -> Either Errors Gram
 validateGrammar =
   (\gram -> merge [checkUniqueHeads gram, checkUniqueConstructors gram]) >=>
@@ -32,14 +29,9 @@ validateGrammar =
     merge = toEither . fmap head . traverse fromEither
 
 ------------------------------------------------------------
-parseGrammar :: [Token] -> Either Errors Gram
-parseGrammar toks = do
-  gram <- P.parseGrammar toks
-  validateGrammar gram
-
-parseGrammarFromString :: String -> Either Errors Gram
-parseGrammarFromString src = do
-  gram <- P.parseGrammarFromString src
+parseGrammarFromString :: FilePath -> String -> Either Errors Gram
+parseGrammarFromString fp src = do
+  gram <- P.parseGrammarFromString fp src
   validateGrammar gram
 
 parseGrammarFromFile :: FilePath -> IO (Either Errors Gram)

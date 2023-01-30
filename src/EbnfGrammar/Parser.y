@@ -1,17 +1,20 @@
 {
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module EbnfGrammar.Parser
-  ( parseGrammar
-  , parseGrammarFromString
+  ( parseGrammarFromString
   , parseGrammarFromFile
   , parseGrammarFromStdin
   ) where
 
 import Control.Monad.Reader (Reader, asks, runReader, withReader)
+import Control.Monad.Except(throwError)
+import Data.Bifunctor
 import qualified Data.List.NonEmpty as NE
-import EbnfGrammar.Error (Error(..), ErrorType(..), Errors, throwSingleError)
+import qualified Data.Set as S
+import EbnfGrammar.Error (Error(..), ErrorType(..), Errors(..), throwSingleError)
 import EbnfGrammar.Posn (Posn(..))
-import EbnfGrammar.Scanner (scan)
+import EbnfGrammar.Scanner (scan')
 import EbnfGrammar.Syntax
 import EbnfGrammar.Token (Token, TokenType(..))
 import Prettyprinter
@@ -32,7 +35,7 @@ import Text.StdToken (StdToken(..))
     UPPER_NAME  { $$@(Token UPPER_NAME  _ _) }
     YIELDS { $$@(Token YIELDS _ _) }
 
-%monad { Either Errors }
+%monad { Either (FilePath -> Errors) }
 %name parseGrammar gram
 
 %%
@@ -84,10 +87,9 @@ type HdColonEnv = (Token, Token)
 addColon :: Token -> HdEnv -> HdColonEnv
 addColon c hd = (hd, c)
 
-happyError :: [Token] -> Either Errors a
+happyError :: [Token] -> Either (FilePath -> Errors) a
 happyError toks =
-  throwSingleError $
-  Error
+  throwError $ \fp ->  Errors $ S.singleton $  Error
     (if null toks
        then EOF
        else posn)
@@ -100,15 +102,19 @@ happyError toks =
         else case head toks of
                Token _tt txt pos -> ("token " ++ show txt, pos)
 
-parseGrammar :: [Token] -> Either Errors Gram
-parseGrammarFromString :: String -> Either Errors Gram
-parseGrammarFromString src = do
-  toks <- scan src
-  parseGrammar toks
+parseGrammar :: [Token] -> Either (FilePath -> Errors) Gram
+parseGrammarFromString :: FilePath -> String -> Either Errors Gram
+parseGrammarFromString fp src = 
+  first ($ fp) eGram
+  where
+   eGram :: Either (FilePath -> Errors) Gram
+   eGram = do
+       toks <- scan' src
+       parseGrammar toks
 
 parseGrammarFromFile :: FilePath -> IO (Either Errors Gram)
-parseGrammarFromFile fp = parseGrammarFromString <$> readFile fp
+parseGrammarFromFile fp = parseGrammarFromString fp <$> readFile fp
 
 parseGrammarFromStdin :: IO (Either Errors Gram)
-parseGrammarFromStdin = parseGrammarFromString <$> getContents
+parseGrammarFromStdin = parseGrammarFromString "<stdin>" <$> getContents
 }
