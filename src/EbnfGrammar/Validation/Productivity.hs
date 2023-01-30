@@ -23,7 +23,6 @@ import EbnfGrammar.Syntax
 import EbnfGrammar.Token (StdToken(..))
 import EbnfGrammar.Utils (monotoneMapFixedPoint)
 import Prettyprinter
-import SafeMap
 
 initMap :: Gram -> M.Map PA (Posn, Bool)
 initMap (Gram ps) = M.fromSet f $ S.fromList $ concatMap getPAs $ NE.toList ps
@@ -64,9 +63,9 @@ checkProductivity gram =
     productiveMap = monotoneMapFixedPoint calcProductives $ fmap snd iMap
     calcProductives :: M.Map PA Bool -> PA -> Bool
     calcProductives m pa =
-      m ! pa ||
+      m M.! pa ||
       case pa of
-        P (Prod _ alts) -> any (\alt -> m ! A alt) alts
+        P (Prod _ alts) -> any (\alt -> m M.! A alt) alts
         A (Alt _ ts) -> all isProductiveTerm ts
       where
         isProductiveTerm :: Term -> Bool
