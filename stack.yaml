@@ -18,7 +18,7 @@
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
 resolver:
-  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/8.yaml
+  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/22.yaml
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -42,9 +42,9 @@ packages:
 #
 extra-deps:
 - git: https://github.com/nedervold/std-token.git
-  commit: 3b2d4ea3dbaae038ee2f8bae9a9118b4ddcce031
+  commit: cdad39434b85c7a45f22438a675681252b6a2bdb
 - git: https://github.com/nedervold/ebnf-extensions.git
-  commit: 40c9af17403e0c5a55d707eac44738581a896303
+  commit: ba54fd0ac5659ca75be58765620604c904897749
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

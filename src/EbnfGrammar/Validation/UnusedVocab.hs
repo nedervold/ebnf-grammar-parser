@@ -46,7 +46,7 @@ checkUnusedVocab g@(Gram ps) =
     Prod hd _ = NE.head ps
     startSym = _tokenText hd
     reachables :: S.Set String
-    reachables = S.fromList $ reachable startSym gr
+    reachables = S.fromList $ reachable gr startSym
     gr = edges es
     es :: [(String, String)]
     es =

@@ -5,31 +5,31 @@
 
 packages:
 - completed:
-    commit: 51fa65df63fc8aa4d753b86c11e82db9c5718ac1
+    commit: cdad39434b85c7a45f22438a675681252b6a2bdb
     git: https://github.com/nedervold/std-token.git
     name: std-token
     pantry-tree:
-      sha256: 1f5e7f9f1fe4faf02b76cb1455d25bf7353ad3ee02f79326b0b354051c620bc2
+      sha256: f5ce0b04a9f1b657879e68f3dc96585f29f59a54117ca3a59feb64893253f89f
       size: 511
-    version: 0.1.0.0
+    version: 0.2.0.0
   original:
-    commit: 51fa65df63fc8aa4d753b86c11e82db9c5718ac1
+    commit: cdad39434b85c7a45f22438a675681252b6a2bdb
     git: https://github.com/nedervold/std-token.git
 - completed:
-    commit: 40c9af17403e0c5a55d707eac44738581a896303
+    commit: ba54fd0ac5659ca75be58765620604c904897749
     git: https://github.com/nedervold/ebnf-extensions.git
     name: ebnf-extensions
     pantry-tree:
-      sha256: 616025e051bb4c10e134aa737bb2a767ab16249d057c26905fe41d173b41e376
+      sha256: 1503c652d83064cb1d677ac1748950cd258a43569d2367298cd830e1d7fcca6a
       size: 1003
     version: 0.1.0.0
   original:
-    commit: 40c9af17403e0c5a55d707eac44738581a896303
+    commit: ba54fd0ac5659ca75be58765620604c904897749
     git: https://github.com/nedervold/ebnf-extensions.git
 snapshots:
 - completed:
-    sha256: bfafe5735ccb74527d754b1f9999ded72d7c3a6c3a88529449661431ccfbd6cc
-    size: 649327
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/8.yaml
+    sha256: 4be1ca5d31689b524a7f0f17a439bbe9136465213edc498e9a395899a670f2aa
+    size: 718486
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/22.yaml
   original:
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/8.yaml
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/22.yaml

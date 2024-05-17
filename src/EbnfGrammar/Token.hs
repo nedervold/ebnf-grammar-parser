@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module EbnfGrammar.Token
   ( Token
@@ -29,3 +30,6 @@ data TokenType
   deriving (Data, Eq, Ord, Show)
 
 type Token = StdToken TokenType String Posn
+
+instance Eq Token where
+  Token tt txt _ == Token tt' txt' _ = tt == tt' && txt == txt'
