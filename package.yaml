@@ -21,7 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/nede
 
 dependencies:
 - base >= 4.7 && < 5
-- algebraic-graphs
+- algebraic-graphs >= 0.7
 - array
 - containers
 - ebnf-extensions

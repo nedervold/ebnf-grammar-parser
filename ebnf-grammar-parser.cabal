@@ -48,7 +48,7 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wredundant-constraints
   build-depends:
-      algebraic-graphs
+      algebraic-graphs >=0.7
     , array
     , base >=4.7 && <5
     , containers
@@ -68,7 +68,7 @@ executable ebnf-grammar-parser-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      algebraic-graphs
+      algebraic-graphs >=0.7
     , array
     , base >=4.7 && <5
     , containers
@@ -90,7 +90,7 @@ test-suite ebnf-grammar-parser-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      algebraic-graphs
+      algebraic-graphs >=0.7
     , array
     , base >=4.7 && <5
     , containers
