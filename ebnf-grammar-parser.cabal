@@ -40,7 +40,6 @@ library
       EbnfGrammar.Validation.UniqueConstructors
       EbnfGrammar.Validation.UniqueHeads
       EbnfGrammar.Validation.UnusedVocab
-      Lib
       SafeMap
   other-modules:
       Paths_ebnf_grammar_parser
