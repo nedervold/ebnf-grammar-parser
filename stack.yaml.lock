@@ -5,15 +5,15 @@
 
 packages:
 - completed:
-    commit: 4ce8e8e97f3d363828bf26a4539c7322a22cb908
+    commit: 30b8edffd2ff889546c40f9f72c432e8d63bc0d5
     git: https://github.com/nedervold/std-token.git
     name: std-token
     pantry-tree:
-      sha256: 787a48141f04b73f94fee9cfe71cf5d21a23cfc441c39fc22e6b2836544ccf4b
+      sha256: feeb0f247e7f313f21b99692291738cf5e0feec98c0cc0b2b0c9261443988387
       size: 511
     version: 0.2.0.0
   original:
-    commit: 4ce8e8e97f3d363828bf26a4539c7322a22cb908
+    commit: 30b8edffd2ff889546c40f9f72c432e8d63bc0d5
     git: https://github.com/nedervold/std-token.git
 - completed:
     commit: ba54fd0ac5659ca75be58765620604c904897749
