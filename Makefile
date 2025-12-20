@@ -19,6 +19,7 @@ lint :
 tidy :
 	-find . -name '*~' -delete
 	-find . -name '#*' -delete
+	-find . -name '.DS_Store' -delete
 
 .PHONY : clean
 clean : tidy
