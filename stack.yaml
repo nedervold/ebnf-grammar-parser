@@ -41,9 +41,9 @@ packages:
 #
 extra-deps:
 - git: https://github.com/nedervold/std-token.git
-  commit: 30b8edffd2ff889546c40f9f72c432e8d63bc0d5
+  commit: 158e9f2db885017fd7e649b33e89759db7a3806f
 - git: https://github.com/nedervold/ebnf-extensions.git
-  commit: ba54fd0ac5659ca75be58765620604c904897749
+  commit: 4079979ff13f2171cd4bdabd650cfb8448a5238b
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

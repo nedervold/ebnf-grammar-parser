@@ -5,26 +5,26 @@
 
 packages:
 - completed:
-    commit: 30b8edffd2ff889546c40f9f72c432e8d63bc0d5
+    commit: 158e9f2db885017fd7e649b33e89759db7a3806f
     git: https://github.com/nedervold/std-token.git
     name: std-token
     pantry-tree:
-      sha256: feeb0f247e7f313f21b99692291738cf5e0feec98c0cc0b2b0c9261443988387
-      size: 511
-    version: 0.2.0.0
+      sha256: fe154ad44e3a64d54a872361c9308971bd79575e768b95dcd0206b7473bf84ae
+      size: 560
+    version: 0.3.1.0
   original:
-    commit: 30b8edffd2ff889546c40f9f72c432e8d63bc0d5
+    commit: 158e9f2db885017fd7e649b33e89759db7a3806f
     git: https://github.com/nedervold/std-token.git
 - completed:
-    commit: ba54fd0ac5659ca75be58765620604c904897749
+    commit: 4079979ff13f2171cd4bdabd650cfb8448a5238b
     git: https://github.com/nedervold/ebnf-extensions.git
     name: ebnf-extensions
     pantry-tree:
-      sha256: 1503c652d83064cb1d677ac1748950cd258a43569d2367298cd830e1d7fcca6a
+      sha256: 9848d38c9551b40b572d331079b37eed0234c82338ff8e13fe7417ac158aa149
       size: 1003
-    version: 0.1.0.0
+    version: 0.1.1.0
   original:
-    commit: ba54fd0ac5659ca75be58765620604c904897749
+    commit: 4079979ff13f2171cd4bdabd650cfb8448a5238b
     git: https://github.com/nedervold/ebnf-extensions.git
 snapshots:
 - completed:
